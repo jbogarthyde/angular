@@ -50,19 +50,19 @@ export interface DirectiveDecorator {
    * Note that, in addition to these options for configuring a directive,
    * you can control a directive's runtime behavior by implementing
    * life-cycle hooks. For more information, see the 
-   * [Livecycle Hooks](guide/lifecycle-hooks) guide.
+   * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
    *
    * **Metadata Properties:**
    *
-   * * **exportAs** - name under which the component instance is exported in a template. Can be
+   * * **exportAs** - Name or names under which the component instance is exported in a template. Can be
    * given a single name or a comma-delimited list of names.
    * * **host** - map of class property to host element bindings for events, properties and
-   * attributes
-   * * **inputs** - list of class property names to data-bind as component inputs
-   * * **outputs** - list of class property names that expose output events that others can
-   * subscribe to
-   * * **providers** - list of providers available to this component and its children
-   * * **queries** -  configure queries that can be injected into the component
+   * attributes.
+   * * **inputs** - Class property names to data-bind as component inputs.
+   * * **outputs** - Class property names that expose output events, to which others
+   * can subscribe.
+   * * **providers** - Providers available to this component and its children.
+   * * **queries** - Configuration for queries that can be injected into the component.
    * * **selector** - A CSS selector that identifies this component in a template
    *
    *
@@ -194,25 +194,26 @@ export interface Directive {
   outputs?: string[];
 
   /**
-   * The events, actions, properties, and attributes related to the host element.
-   *
-   * For event handling, a set of key-value pairs map an `(event)` to a `method` :
-   *
-   * - `event`: The DOM event that the directive listens to.
-   * To listen to global events, add the target to the event name.
-   * The target can be `window`, `document` or `body`.
-   * - `statement`: The statement to execute when the event occurs.If the 
-   * statement evalueates to `false`, then `preventDefault`is applied on the DOM
-   * event.
-   *
-   * When writing a directive event binding, you can also refer to the `$event` local variable.
-   *
-   * For properties, the host property bindings specify which DOM properties a directive updates.
+   * Maps class properties to host element bindings for properties,
+   * attributes, and events, using a set of key-value pairs.
+   * 
    * Angular automatically checks host property bindings during change detection.
    * If a binding changes, Angular updates the directive's host element.
    *
-   * For attributes, a static attribute value in the DOM is propagated to
-   * the specified property in the host element.
+   * When the key is a property of the host element, the property value is
+   * the propagated to the specified DOM property.
+   *
+   * When the key is a static attribute in the DOM, the attribute value
+   * is propagated to the specified property in the host element.
+   *
+   * For event handling:
+   * - The key is the DOM event that the directive listens to.
+   * To listen to global events, add the target to the event name.
+   * The target can be `window`, `document` or `body`.
+   * - The value is the statement to execute when the event occurs. If the 
+   * statement evalueates to `false`, then `preventDefault`is applied on the DOM
+   * event. A handler method can refer to the `$event` local variable.
+   *
    *
    * @usageNotes
    *
@@ -324,7 +325,8 @@ export interface Directive {
   providers?: Provider[];
 
   /**
-   * The name that can be used in the template to assign this directive to a variable.
+   * The name or names that can be used in the template to assign this directive to a variable.
+   * For multiple names, use a comma-separated string.
    *
    * @usageNotes
    * The following simple example assigns the directive to a variable
@@ -422,27 +424,29 @@ export interface ComponentDecorator {
    *
    * **Metadata Properties:**
    *
-   * * **animations** - list of animations of this component
-   * * **changeDetection** - change detection strategy used by this component
-   * * **encapsulation** - style encapsulation strategy used by this component
-   * * **entryComponents** - list of components that are dynamically inserted into the view of this
-   *   component
-   * * **exportAs** - name under which the component instance is exported in a template
-   * * **host** - map of class property to host element bindings for events, properties and
-   *   attributes
-   * * **inputs** - list of class property names to data-bind as component inputs
-   * * **interpolation** - custom interpolation markers used in this component's template
-   * * **moduleId** - ES/CommonJS module id of the file in which this component is defined
-   * * **outputs** - list of class property names that expose output events that others can
-   *   subscribe to
-   * * **providers** - list of providers available to this component and its children
-   * * **queries** -  configure queries that can be injected into the component
-   * * **selector** - css selector that identifies this component in a template
-   * * **styleUrls** - list of urls to stylesheets to be applied to this component's view
-   * * **styles** - inline-defined styles to be applied to this component's view
-   * * **template** - inline-defined template for the view
-   * * **templateUrl** - url to an external file containing a template for the view
-   * * **viewProviders** - list of providers available to this component and its view children
+   * * **animations** : One or more [animation triggers](trigger), containing 
+   * 'state' and `transition` entries.
+   * * **changeDetection** : The change detection strategy used by this component.
+   * * **encapsulation** : The style encapsulation strategy used by this component.
+   * * **entryComponents** : The set of components that are dynamically inserted into
+   * the view of this component.
+   * * **exportAs** : The name under which the component instance is exported in a template.
+   * * **host** : A map of class property to host element bindings for events, properties, and
+   * attributes
+   * * **inputs** : The set of class property names to data-bind as component inputs.
+   * * **interpolation** : A set of custom interpolation markers used in this component's template.
+   * * **moduleId** :  The ES/CommonJS module ID of the file in which this component is defined.
+   * * **outputs** : The list of class property names that expose output events to which others
+   * can subscribe.
+   * * **providers** : The set of providers available to this component and its children.
+   * * **queries** : Configuration for queries that can be injected into the component.
+   * * **selector** : The CSS selector that identifies this component in a template.
+   * * **styleUrls** : A set of stylesheet URLs to be applied to this component's view.
+   * * **styles** : A set of CSS style define inline, to be applied to this component's view.
+   * * **template** : A template for the view, defined inline.
+   * * **templateUrl** : The URL to an external file containing a template for the view.
+   * * **viewProviders** : A set of view providers available to this component
+   * and its view children.
    *
    * @usageNotes
    *
