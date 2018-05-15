@@ -17,172 +17,6 @@ import {ViewEncapsulation} from './view';
 /**
  * Supplies configuration metadata for an Angular directive.
  *
- * @usageNotes
- *
- * To define your own directive, import the decorator
- * and use it to annotate your directive class. The
- * metadata must include a `selector` that you use to
- * reference your directive class from a template.
- *
- * ```
- * import {Directive} from '@angular/core';
- *
- * @Directive({
- *   selector: 'my-directive',
- * })
- * export class MyDirective {
- * }
- * ```
- *
- * The following simple example assigns a directive to a variable
- * in a template:
- *
- * ```
- * @Directive({
- *   selector: 'child-dir',
- *   exportAs: 'child'
- * })
- * class ChildDir {
- * }
- *
- * @Component({
- *   selector: 'main',
- *   template: `<child-dir #c="child"></child-dir>`
- * })
- * class MainComponent {
- * }
- *
- * ```
- * ### Configuring host mappings
- *
- * The following example shows how to map an event to an action.
- * It declares a directive that attaches a click listener to
- * a button and counts clicks.
- *
- * ```typescript
- * @Directive({
- *   selector: 'button[counting]',
- *   host: {
- *     '(click)': 'onClick($event.target)'
- *   }
- * })
- * class CountClicks {
- *   numberOfClicks = 0;
- *
- *   onClick(btn) {
- *     console.log("button", btn, "number of clicks:", this.numberOfClicks++);
- *   }
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: `<button counting>Increment</button>`
- * })
- * class App {}
- * ```
- * See [live demo](http://plnkr.co/edit/DlA5KU?p=preview)
- *
- * The following example creates a directive that maps a host class to a DOM
- * element, setting the `valid` and `invalid` properties
- * on the DOM element that has the `ngModel` directive on it.
- *
- * ```typescript
- * @Directive({
- *   selector: '[ngModel]',
- *   host: {
- *     '[class.valid]': 'valid',
- *     '[class.invalid]': 'invalid'
- *   }
- * })
- * class NgModelStatus {
- *   constructor(public control:NgModel) {}
- *   get valid { return this.control.valid; }
- *   get invalid { return this.control.invalid; }
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: `<input [(ngModel)]="prop">`
- * })
- * class App {
- *   prop;
- * }
- * ```
- * See [live demo](http://plnkr.co/edit/gNg0ED?p=preview).
- *
- * The following example shows how to specify static attributes
- * that should be propagated to a host element.
- *
- * ```typescript
- * @Directive({
- *   selector: '[my-button]',
- *   host: {
- *     'role': 'button'
- *   }
- * })
- * class MyButton {
- * }
- * ```
- * Attaching the `my-button` directive to the host `<div>` element
- * ensures that this element gets the "button" role.
- *
- * ```html
- * <div my-button></div>
- * ```
- *
- * ### DI providers
- *
- * The following simple example shows how a class is injected,
- * using a provider specified in the directive metadata:
- *
- * ```
- * class Greeter {
- *    greet(name:string) {
- *      return 'Hello ' + name + '!';
- *    }
- * }
- *
- * @Directive({
- *   selector: 'greet',
- *   providers: [
- *     Greeter
- *   ]
- * })
- * class HelloWorld {
- *   greeter:Greeter;
- *
- *   constructor(greeter:Greeter) {
- *     this.greeter = greeter;
- *   }
- * }
- * ```
- *
- * ### Configuring queries
- *
- * The followoing example (shows what??)
- * ```
- * @Component({
- *   selector: 'someDir',
- *   queries: {
- *     contentChildren: new ContentChildren(ChildDirective),
- *     viewChildren: new ViewChildren(ChildDirective)
- *   },
- *   template: '<child-directive></child-directive>'
- * })
- * class SomeDir {
- *   contentChildren: QueryList<ChildDirective>,
- *   viewChildren: QueryList<ChildDirective>
- *
- *   ngAfterContentInit() {
- *     // contentChildren is set
- *   }
- *
- *   ngAfterViewInit() {
- *     // viewChildren is set
- *   }
- * }
- * ```
- *
  */
 export interface DirectiveDecorator {
   /**
@@ -191,15 +25,181 @@ export interface DirectiveDecorator {
    * instantiated, and used at run time.
    *
    * A directive must belong to an NgModule in order for it to be usable
-         * by another directive, component, or application.
-         * To make a directive a member of anNgModule,
-         * list it in the `declarations` field of the `@NgModule` metadata.
-         *
-         * Note that, in addition to the metadata options for configuring a directive,
-         * you can control a directive's runtime behavior by implementing
-         * life-cycle hooks. For more information, see the
-         * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
-         *
+   * by another directive, component, or application.
+   * To make a directive a member of anNgModule,
+   * list it in the `declarations` field of the `@NgModule` metadata.
+   *
+   * Note that, in addition to the metadata options for configuring a directive,
+   * you can control a directive's runtime behavior by implementing
+   * life-cycle hooks. For more information, see the
+   * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
+   *
+   * @usageNotes
+   *
+   * To define your own directive, import the decorator
+   * and use it to annotate your directive class. The
+   * metadata must include a `selector` that you use to
+   * reference your directive class from a template.
+   *
+   * ```
+   * import {Directive} from '@angular/core';
+   *
+   * @Directive({
+   *   selector: 'my-directive',
+   * })
+   * export class MyDirective {
+   * }
+   * ```
+   *
+   * The following simple example assigns a directive to a variable
+   * in a template:
+   *
+   * ```
+   * @Directive({
+   *   selector: 'child-dir',
+   *   exportAs: 'child'
+   * })
+   * class ChildDir {
+   * }
+   *
+   * @Component({
+   *   selector: 'main',
+   *   template: `<child-dir #c="child"></child-dir>`
+   * })
+   * class MainComponent {
+   * }
+   *
+   * ```
+   * ### Configuring host mappings
+   *
+   * The following example shows how to map an event to an action.
+   * It declares a directive that attaches a click listener to
+   * a button and counts clicks.
+   *
+   * ```typescript
+   * @Directive({
+   *   selector: 'button[counting]',
+   *   host: {
+   *     '(click)': 'onClick($event.target)'
+   *   }
+   * })
+   * class CountClicks {
+   *   numberOfClicks = 0;
+   *
+   *   onClick(btn) {
+   *     console.log("button", btn, "number of clicks:", this.numberOfClicks++);
+   *   }
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: `<button counting>Increment</button>`
+   * })
+   * class App {}
+   * ```
+   * See [live demo](http://plnkr.co/edit/DlA5KU?p=preview)
+   *
+   * The following example creates a directive that maps a host class to a DOM
+   * element, setting the `valid` and `invalid` properties
+   * on the DOM element that has the `ngModel` directive on it.
+   *
+   * ```typescript
+   * @Directive({
+   *   selector: '[ngModel]',
+   *   host: {
+   *     '[class.valid]': 'valid',
+   *     '[class.invalid]': 'invalid'
+   *   }
+   * })
+   * class NgModelStatus {
+   *   constructor(public control:NgModel) {}
+   *   get valid { return this.control.valid; }
+   *   get invalid { return this.control.invalid; }
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: `<input [(ngModel)]="prop">`
+   * })
+   * class App {
+   *   prop;
+   * }
+   * ```
+   * See [live demo](http://plnkr.co/edit/gNg0ED?p=preview).
+   *
+   * The following example shows how to specify static attributes
+   * that should be propagated to a host element.
+   *
+   * ```typescript
+   * @Directive({
+   *   selector: '[my-button]',
+   *   host: {
+   *     'role': 'button'
+   *   }
+   * })
+   * class MyButton {
+   * }
+   * ```
+   * Attaching the `my-button` directive to the host `<div>` element
+   * ensures that this element gets the "button" role.
+   *
+   * ```html
+   * <div my-button></div>
+   * ```
+   *
+   * ### DI providers
+   *
+   * The following simple example shows how a class is injected,
+   * using a provider specified in the directive metadata:
+   *
+   * ```
+   * class Greeter {
+   *    greet(name:string) {
+   *      return 'Hello ' + name + '!';
+   *    }
+   * }
+   *
+   * @Directive({
+   *   selector: 'greet',
+   *   providers: [
+   *     Greeter
+   *   ]
+   * })
+   * class HelloWorld {
+   *   greeter:Greeter;
+   *
+   *   constructor(greeter:Greeter) {
+   *     this.greeter = greeter;
+   *   }
+   * }
+   * ```
+   *
+   * ### Configuring queries
+   *
+   * The followoing example (shows what??)
+   * ```
+   * @Component({
+   *   selector: 'someDir',
+   *   queries: {
+   *     contentChildren: new ContentChildren(ChildDirective),
+   *     viewChildren: new ViewChildren(ChildDirective)
+   *   },
+   *   template: '<child-directive></child-directive>'
+   * })
+   * class SomeDir {
+   *   contentChildren: QueryList<ChildDirective>,
+   *   viewChildren: QueryList<ChildDirective>
+   *
+   *   ngAfterContentInit() {
+   *     // contentChildren is set
+   *   }
+   *
+   *   ngAfterViewInit() {
+   *     // viewChildren is set
+   *   }
+   * }
+   * ```
+   * 
    * @Annotation
    */
   (obj: Directive): TypeDecorator;
@@ -329,74 +329,6 @@ export const Directive: DirectiveDecorator = makeDecorator(
 /**
  * Marks a class as a component and provides configuration and constructor metadata.
  *
- * @usageNotes
- *
- * ### Setting component inputs
- *
- * The following example creates a component with two data-bound properties,
- * specified by the `inputs` value.
- *
- * ```typescript
- * @Component({
- *   selector: 'bank-account',
- *   inputs: ['bankName', 'id: account-id'],
- *   template: `
- *     Bank Name: {{bankName}}
- *     Account Id: {{id}}
- *   `
- * })
- * class BankAccount {
- *   bankName: string;
- *   id: string;
- *
- *   // this property is not bound, and won't be automatically updated by Angular
- *   normalizedBankName: string;
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: `
- *     <bank-account bankName="RBC" account-id="4747"></bank-account>
- *   `
- * })
- * class App {}
- * ```
- See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
- *
- * ### Setting component outputs
- *
- * The following example
- *
- * ```typescript
- * @Directive({
- *   selector: 'interval-dir',
- *   outputs: ['everySecond', 'five5Secs: everyFiveSeconds']
- * })
- * class IntervalDir {
- *   everySecond = new EventEmitter();
- *   five5Secs = new EventEmitter();
- *
- *   constructor() {
- *     setInterval(() => this.everySecond.emit("event"), 1000);
- *     setInterval(() => this.five5Secs.emit("event"), 5000);
- *   }
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: `
- *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
- *     </interval-dir>
- *   `
- * })
- * class App {
- *   everySecond() { console.log('second'); }
- *   everyFiveSeconds() { console.log('five seconds'); }
- * }
- * ```
- * See [live demo](http://plnkr.co/edit/d5CNq7?p=preview)
- *
- *
  */
 export interface ComponentDecorator {
   /**
@@ -421,7 +353,106 @@ export interface ComponentDecorator {
    *
    * @usageNotes
    *
-   * {@example core/ts/metadata/metadata.ts region='component'}
+   * ### Setting component inputs
+   *
+   * The following example creates a component with two data-bound properties,
+   * specified by the `inputs` value.
+   *
+   * ```typescript
+   * @Component({
+   *   selector: 'bank-account',
+   *   inputs: ['bankName', 'id: account-id'],
+   *   template: `
+   *     Bank Name: {{bankName}}
+   *     Account Id: {{id}}
+   *   `
+   * })
+   * class BankAccount {
+   *   bankName: string;
+   *   id: string;
+   *
+   *   // this property is not bound, and won't be automatically updated by Angular
+   *   normalizedBankName: string;
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: `
+   *     <bank-account bankName="RBC" account-id="4747"></bank-account>
+   *   `
+   * })
+   * class App {}
+   * ```
+   See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
+   *
+   * ### Setting component outputs
+   *
+   * The following example (shows what, exactly??)
+   *
+   * ```typescript
+   * @Directive({
+   *   selector: 'interval-dir',
+   *   outputs: ['everySecond', 'five5Secs: everyFiveSeconds']
+   * })
+   * class IntervalDir {
+   *   everySecond = new EventEmitter();
+   *   five5Secs = new EventEmitter();
+   *
+   *   constructor() {
+   *     setInterval(() => this.everySecond.emit("event"), 1000);
+   *     setInterval(() => this.five5Secs.emit("event"), 5000);
+   *   }
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: `
+   *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
+   *     </interval-dir>
+   *   `
+   * })
+   * class App {
+   *   everySecond() { console.log('second'); }
+   *   everyFiveSeconds() { console.log('five seconds'); }
+   * }
+   * ```
+   * See [live demo](http://plnkr.co/edit/d5CNq7?p=preview)
+   *
+   *
+   * ### Injecting a class with a view provider
+   *
+   * The following simple example injects a class into a component
+   * using the view provider specified in component metadata:
+   *
+   * ```
+   * class Greeter {
+   *    greet(name:string) {
+   *      return 'Hello ' + name + '!';
+   *    }
+   * }
+   *
+   * @Directive({
+   *   selector: 'needs-greeter'
+   * })
+   * class NeedsGreeter {
+   *   greeter:Greeter;
+   *
+   *   constructor(greeter:Greeter) {
+   *     this.greeter = greeter;
+   *   }
+   * }
+   *
+   * @Component({
+   *   selector: 'greet',
+   *   viewProviders: [
+   *     Greeter
+   *   ],
+   *   template: `<needs-greeter></needs-greeter>`
+   * })
+   * class HelloWorld {
+   * }
+   *
+   * ```
    *
    *
    * @Annotation
@@ -435,45 +466,6 @@ export interface ComponentDecorator {
 
 /**
  * Supplies configuration metadata for an Angular component.
- *
- * @usageNotes
- *
- * ### Injecting a class with a view provider
- *
- * The following simple example injects a class into a component
- * using the view provider specified in component metadata:
- *
- * ```
- * class Greeter {
- *    greet(name:string) {
- *      return 'Hello ' + name + '!';
- *    }
- * }
- *
- * @Directive({
- *   selector: 'needs-greeter'
- * })
- * class NeedsGreeter {
- *   greeter:Greeter;
- *
- *   constructor(greeter:Greeter) {
- *     this.greeter = greeter;
- *   }
- * }
- *
- * @Component({
- *   selector: 'greet',
- *   viewProviders: [
- *     Greeter
- *   ],
- *   template: `<needs-greeter></needs-greeter>`
- * })
- * class HelloWorld {
- * }
- *
- * ```
- *
- *
  */
 export interface Component extends Directive {
   /**
