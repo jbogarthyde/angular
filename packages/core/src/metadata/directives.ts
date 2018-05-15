@@ -199,13 +199,13 @@ export interface DirectiveDecorator {
    *   }
    * }
    * ```
-   * 
+   *
    * @Annotation
    */
   (obj: Directive): TypeDecorator;
 
   /**
-   * See the {@link Directive} decorator.
+   * See the `Directive` decorator.
    */
   new (obj: Directive): Directive;
 }
@@ -677,16 +677,13 @@ export const Component: ComponentDecorator = makeDecorator(
  */
 export interface PipeDecorator {
   /**
-   * Declare reusable pipe function.
+   * Declares a reusable pipe function, and supplies configuration metadata.
    *
-   * A "pure" pipe is only re-evaluated when either the input or any of the arguments change.
-   *
-   * When not specified, pipes default to being pure.
    */
   (obj: Pipe): TypeDecorator;
 
   /**
-   * See the {@link Pipe} decorator.
+   * See the `Pipe` decorator.
    */
   new (obj: Pipe): Pipe;
 }
@@ -698,34 +695,33 @@ export interface PipeDecorator {
  */
 export interface Pipe {
   /**
-   * Name of the pipe.
+   * The pipe name to use in template bindings. For example, a
+   * template binding expression such as `{{ exp | myPipe }}` transforms the
+   * result of the expression using a pipe with the name `myPipe`.
    *
-   * The pipe name is used in template bindings. For example if a pipe is named
-   * `myPipe` then it would be used in the template binding expression like
-   * so:  `{{ exp | myPipe }}`.
    */
   name: string;
 
   /**
-   * If Pipe is pure (its output depends only on its input.)
+   * When true, the pipe's output depends only on its input.
+   * A pipe is pure by default, meaning that the
+   * `transform()` method is invoked only when its inputs arguments
+   * change.
    *
-   * Normally pipe's `transform` method is only invoked when the inputs to pipe`s
-   * `transform` method change. If the pipe has internal state (it's result are
-   * dependent on state other than its arguments) than set `pure` to `false` so
-   * that the pipe is invoked on each change-detection even if the arguments to the
-   * pipe do not change.
+   * If the pipe has internal state (that is, the result
+   * depends on state other than its arguments), set `pure` to false`.
+   * In this case, the pipe is invoked on each change-detection cycle,
+   * even if the arguments have not changed.
    */
   pure?: boolean;
 }
 
 /**
- * Pipe decorator and metadata.
+ * Marks a class as pipe and supplies configuration metadata.
  *
- * Use the `@Pipe` annotation to declare that a given class is a pipe. A pipe
- * class must also implement {@link PipeTransform} interface.
- *
- * To use the pipe include a reference to the pipe class in
- * {@link NgModule#declarations}.
+ * - A pipe class must implement the `PipeTransform` interface.
+ * - To use the pipe in a template, you must include a reference
+ * to the pipe class in `NgModule#declarations`.
  *
  *
  * @Annotation
