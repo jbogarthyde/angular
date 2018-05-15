@@ -215,7 +215,7 @@ export interface DirectiveDecorator {
  */
 export interface Directive {
   /**
-   * The CSS selector that identifies this component in a template
+   * The CSS selector that identifies this directive in a template
    * and triggers instantiation of the directive.
    *
    * Declare as one of the following:
@@ -227,7 +227,7 @@ export interface Directive {
    * - `:not(sub_selector)`: Select only if the element does not match the `sub_selector`.
    * - `selector1, selector2`: Select if either `selector1` or `selector2` matches.
    *
-   * Angular only allows directives to trigger on CSS selectors that do not cross
+   * Angular only allows directives to apply on CSS selectors that do not cross
    * element boundaries.
    *
    * For the following template HTML, a directive with an `input[type=text]` selector,
@@ -539,21 +539,21 @@ export interface Component extends Directive {
   styles?: string[];
 
   /**
-   * One or more [animation triggers](trigger), containing
-   * [state](state) and [transition](transition) entries.
-   * See the [Animations guide](guide/animations) and [API documentation](animations).
+   * One or more animation `trigger()` calls, containing
+   * `state()` and `transition()` definitions.
+   * See the [Animations guide](/guide/animations) and animations API documentation.
    *
    */
   animations?: any[];
 
   /**
    * An encapsulation policy for the template and CSS styles. One of:
-   * - [ViewEncapsulation#Native](`ViewEncapsulation.Native`): Use shadow roots. This works
-   *   only if natively available on the platform.
-   * - [ViewEncapsulation#Emulated](`ViewEncapsulation.Emulated`): Use shimmed CSS that
-   *   emulates the native behavior.
-   * - [ViewEncapsulation#None](`ViewEncapsulation.None`): Use global CSS without any
-   *   encapsulation.
+   * - `ViewEncapsulation.Native`: Use shadow roots. This works
+   * only if natively available on the platform.
+   * - `ViewEncapsulation.Emulated`: Use shimmed CSS that
+   * emulates the native behavior.
+   * - `ViewEncapsulation.None`: Use global CSS without any
+   * encapsulation.
    *
    * If not supplied, the value is taken from `CompilerOptions`. The default compiler option is
    * `ViewEncapsulation.Emulated`.
@@ -592,7 +592,7 @@ export interface Component extends Directive {
  *
  * ### Using animations
  *
- * The following snippet shows a trigger animation in a component's
+ * The following snippet shows an animation trigger in a component's
  * metadata. The trigger is attached to an element in the component's
  * template, using "@_trigger_name_", and a state expression that is evaluated
  * at run time to determine whether the animation should start.
