@@ -15,57 +15,191 @@ import {ViewEncapsulation} from './view';
 
 
 /**
- * Type of the Directive decorator / constructor function.
+ * Supplies configuration metadata for an Angular directive.
  *
+ * @usageNotes
+ *
+ * To define your own directive, import the decorator
+ * and use it to annotate your directive class. The 
+ * metadata must include a `selector` that you use to 
+ * reference your directive class from a template.
+ *
+ * ```
+ * import {Directive} from '@angular/core';
+ *
+ * @Directive({
+ *   selector: 'my-directive',
+ * })
+ * export class MyDirective {
+ * }
+ * ```
+ *
+ * The following simple example assigns a directive to a variable
+ * in a template:
+ *
+ * ```
+ * @Directive({
+ *   selector: 'child-dir',
+ *   exportAs: 'child'
+ * })
+ * class ChildDir {
+ * }
+ *
+ * @Component({
+ *   selector: 'main',
+ *   template: `<child-dir #c="child"></child-dir>`
+ * })
+ * class MainComponent {
+ * }
+ *
+ * ```
+ * ### Configuring host mappings
+ *
+ * The following example shows how to map an event to an action.
+ * It declares a directive that attaches a click listener to
+ * a button and counts clicks.
+ *
+ * ```typescript
+ * @Directive({
+ *   selector: 'button[counting]',
+ *   host: {
+ *     '(click)': 'onClick($event.target)'
+ *   }
+ * })
+ * class CountClicks {
+ *   numberOfClicks = 0;
+ *
+ *   onClick(btn) {
+ *     console.log("button", btn, "number of clicks:", this.numberOfClicks++);
+ *   }
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: `<button counting>Increment</button>`
+ * })
+ * class App {}
+ * ```
+ * See [live demo](http://plnkr.co/edit/DlA5KU?p=preview)
+ *
+ * The following example creates a directive that maps a host class to a DOM 
+ * element, setting the `valid` and `invalid` properties
+ * on the DOM element that has the `ngModel` directive on it.
+ *
+ * ```typescript
+ * @Directive({
+ *   selector: '[ngModel]',
+ *   host: {
+ *     '[class.valid]': 'valid',
+ *     '[class.invalid]': 'invalid'
+ *   }
+ * })
+ * class NgModelStatus {
+ *   constructor(public control:NgModel) {}
+ *   get valid { return this.control.valid; }
+ *   get invalid { return this.control.invalid; }
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: `<input [(ngModel)]="prop">`
+ * })
+ * class App {
+ *   prop;
+ * }
+ * ```
+ * See [live demo](http://plnkr.co/edit/gNg0ED?p=preview).
+ *
+ * The following example shows how to specify static attributes
+ * that should be propagated to a host element.
+ *
+ * ```typescript
+ * @Directive({
+ *   selector: '[my-button]',
+ *   host: {
+ *     'role': 'button'
+ *   }
+ * })
+ * class MyButton {
+ * }
+ * ```
+ * Attaching the `my-button` directive to the host `<div>` element
+ * ensures that this element gets the "button" role.
+ *
+ * ```html
+ * <div my-button></div>
+ * ```
+ *
+ * ### DI providers
+ *
+ * The following simple example shows how a class is injected,
+ * using a provider specified in the directive metadata:
+ *
+ * ```
+ * class Greeter {
+ *    greet(name:string) {
+ *      return 'Hello ' + name + '!';
+ *    }
+ * }
+ *
+ * @Directive({
+ *   selector: 'greet',
+ *   providers: [
+ *     Greeter
+ *   ]
+ * })
+ * class HelloWorld {
+ *   greeter:Greeter;
+ *
+ *   constructor(greeter:Greeter) {
+ *     this.greeter = greeter;
+ *   }
+ * }
+ * ```
+ * 
+ * ### Configuring queries
+ *
+ * The followoing example (shows what??)
+ * ```
+ * @Component({
+ *   selector: 'someDir',
+ *   queries: {
+ *     contentChildren: new ContentChildren(ChildDirective),
+ *     viewChildren: new ViewChildren(ChildDirective)
+ *   },
+ *   template: '<child-directive></child-directive>'
+ * })
+ * class SomeDir {
+ *   contentChildren: QueryList<ChildDirective>,
+ *   viewChildren: QueryList<ChildDirective>
+ *
+ *   ngAfterContentInit() {
+ *     // contentChildren is set
+ *   }
+ *
+ *   ngAfterViewInit() {
+ *     // viewChildren is set
+ *   }
+ * }
+ * ```
  *
  */
 export interface DirectiveDecorator {
   /**
-   * @usageNotes
-   *
-   * ```
-   * import {Directive} from '@angular/core';
-   *
-   * @Directive({
-   *   selector: 'my-directive',
-   * })
-   * export class MyDirective {
-   * }
-   * ```
-   *
-   * @description
-   *
-   * Marks a class as an Angular directive and collects directive configuration
-   * metadata.
-   *
    * Directives allow you to attach behavior to elements in the DOM.
    * Directive metadata determines how the directive should be processed,
-   * instantiated. and used at runtime.
+   * instantiated, and used at run time.
    *
    * A directive must belong to an NgModule in order for it to be usable
-   * by another directive, component, or application.
-   * To make a directive a member of anNgModule,
-   * list it in the `declarations` field of the `@NgModule` metadata.
-   *
-   * Note that, in addition to these options for configuring a directive,
-   * you can control a directive's runtime behavior by implementing
-   * life-cycle hooks. For more information, see the 
-   * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
-   *
-   * **Metadata Properties:**
-   *
-   * * **exportAs** - Name or names under which the component instance is exported in a template. Can be
-   * given a single name or a comma-delimited list of names.
-   * * **host** - map of class property to host element bindings for events, properties and
-   * attributes.
-   * * **inputs** - Class property names to data-bind as component inputs.
-   * * **outputs** - Class property names that expose output events, to which others
-   * can subscribe.
-   * * **providers** - Providers available to this component and its children.
-   * * **queries** - Configuration for queries that can be injected into the component.
-   * * **selector** - A CSS selector that identifies this component in a template
-   *
-   *
+	 * by another directive, component, or application.
+	 * To make a directive a member of anNgModule,
+	 * list it in the `declarations` field of the `@NgModule` metadata.
+	 *
+	 * Note that, in addition to the metadata options for configuring a directive,
+	 * you can control a directive's runtime behavior by implementing
+	 * life-cycle hooks. For more information, see the 
+	 * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
+	 *
    * @Annotation
    */
   (obj: Directive): TypeDecorator;
@@ -76,6 +210,9 @@ export interface DirectiveDecorator {
   new (obj: Directive): Directive;
 }
 
+/**
+ * 
+ */
 export interface Directive {
   /**
    * The CSS selector that identifies this component in a template
@@ -92,8 +229,6 @@ export interface Directive {
    *
    * Angular only allows directives to trigger on CSS selectors that do not cross
    * element boundaries.
-
-   * @usageNotes
    *
    * For the following template HTML, a directive with an `input[type=text]` selector,
    * would be instantiated only on the `<input type="text">` element. 
@@ -118,36 +253,6 @@ export interface Directive {
    * - `bindingProperty` specifies the DOM property where the value is read from.
    * When not provided, it is assumed to be the same as `directiveProperty`.
    *
-   * @usageNotes
-   *
-   * The following example creates a component with two data-bound properties.
-   *
-   * ```typescript
-   * @Component({
-   *   selector: 'bank-account',
-   *   inputs: ['bankName', 'id: account-id'],
-   *   template: `
-   *     Bank Name: {{bankName}}
-   *     Account Id: {{id}}
-   *   `
-   * })
-   * class BankAccount {
-   *   bankName: string;
-   *   id: string;
-   *
-   *   // this property is not bound, and won't be automatically updated by Angular
-   *   normalizedBankName: string;
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `
-   *     <bank-account bankName="RBC" account-id="4747"></bank-account>
-   *   `
-   * })
-   * class App {}
-   * ```
-   * See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
    */
   inputs?: string[];
 
@@ -160,36 +265,6 @@ export interface Directive {
    * - `directiveProperty` specifies the component property that emits events.
    * - `bindingProperty` specifies the DOM property the event handler is attached to.
    *
-   * @usageNotes
-   *
-   * ```typescript
-   * @Directive({
-   *   selector: 'interval-dir',
-   *   outputs: ['everySecond', 'five5Secs: everyFiveSeconds']
-   * })
-   * class IntervalDir {
-   *   everySecond = new EventEmitter();
-   *   five5Secs = new EventEmitter();
-   *
-   *   constructor() {
-   *     setInterval(() => this.everySecond.emit("event"), 1000);
-   *     setInterval(() => this.five5Secs.emit("event"), 5000);
-   *   }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `
-   *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
-   *     </interval-dir>
-   *   `
-   * })
-   * class App {
-   *   everySecond() { console.log('second'); }
-   *   everyFiveSeconds() { console.log('five seconds'); }
-   * }
-   * ```
-   * See [live demo](http://plnkr.co/edit/d5CNq7?p=preview)
    */
   outputs?: string[];
 
@@ -214,81 +289,6 @@ export interface Directive {
    * statement evalueates to `false`, then `preventDefault`is applied on the DOM
    * event. A handler method can refer to the `$event` local variable.
    *
-   *
-   * @usageNotes
-   *
-   * The following example declares a directive that attaches a click listener to the button and
-   * counts clicks.
-   *
-   * ```typescript
-   * @Directive({
-   *   selector: 'button[counting]',
-   *   host: {
-   *     '(click)': 'onClick($event.target)'
-   *   }
-   * })
-   * class CountClicks {
-   *   numberOfClicks = 0;
-   *
-   *   onClick(btn) {
-   *     console.log("button", btn, "number of clicks:", this.numberOfClicks++);
-   *   }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `<button counting>Increment</button>`
-   * })
-   * class App {}
-   * ```
-   * See [live demo](http://plnkr.co/edit/DlA5KU?p=preview)
-   * 
-   * ### Map from host class to DOM element
-   *
-   * The following example creates a directive that sets the `valid` and `invalid` classes
-   * on the DOM element that has the `ngModel` directive on it.
-   *
-   * ```typescript
-   * @Directive({
-   *   selector: '[ngModel]',
-   *   host: {
-   *     '[class.valid]': 'valid',
-   *     '[class.invalid]': 'invalid'
-   *   }
-   * })
-   * class NgModelStatus {
-   *   constructor(public control:NgModel) {}
-   *   get valid { return this.control.valid; }
-   *   get invalid { return this.control.invalid; }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `<input [(ngModel)]="prop">`
-   * })
-   * class App {
-   *   prop;
-   * }
-   * ```
-   * See [live demo](http://plnkr.co/edit/gNg0ED?p=preview).
-   *
-   * ### Map to host property from static attribute
-   *
-   * The following example shows how to specify static attributes
-   * that should be propagated to a host element.
-   * Using the `my-button` directive (`<div my-button></div>`) on a host element
-   * (here `<div>`) ensures that this element gets the "button" role.
-   *
-   * ```typescript
-   * @Directive({
-   *   selector: '[my-button]',
-   *   host: {
-   *     'role': 'button'
-   *   }
-   * })
-   * class MyButton {
-   * }
-   * ```
    */
   host?: {[key: string]: string};
 
@@ -296,31 +296,6 @@ export interface Directive {
    * The set of injectable objects that are visible to the directive and its light DOM
    * children.
    *
-   * @usageNotes
-   *
-   * The following simple example shows how a class is injected:
-   *
-   * ```
-   * class Greeter {
-   *    greet(name:string) {
-   *      return 'Hello ' + name + '!';
-   *    }
-   * }
-   *
-   * @Directive({
-   *   selector: 'greet',
-   *   providers: [
-   *     Greeter
-   *   ]
-   * })
-   * class HelloWorld {
-   *   greeter:Greeter;
-   *
-   *   constructor(greeter:Greeter) {
-   *     this.greeter = greeter;
-   *   }
-   * }
-   * ```
    */
   providers?: Provider[];
 
@@ -328,26 +303,6 @@ export interface Directive {
    * The name or names that can be used in the template to assign this directive to a variable.
    * For multiple names, use a comma-separated string.
    *
-   * @usageNotes
-   * The following simple example assigns the directive to a variable
-   * in a template:
-   *
-   * ```
-   * @Directive({
-   *   selector: 'child-dir',
-   *   exportAs: 'child'
-   * })
-   * class ChildDir {
-   * }
-   *
-   * @Component({
-   *   selector: 'main',
-   *   template: `<child-dir #c="child"></child-dir>`
-   * })
-   * class MainComponent {
-   * }
-   *
-   * ```
    */
   exportAs?: string;
 
@@ -357,30 +312,6 @@ export interface Directive {
    * Content queries are set before the `ngAfterContentInit` callback is called.
    * View queries are set before the `ngAfterViewInit` callback is called.
    *
-   * @usageNotes
-   *
-   * ```
-   * @Component({
-   *   selector: 'someDir',
-   *   queries: {
-   *     contentChildren: new ContentChildren(ChildDirective),
-   *     viewChildren: new ViewChildren(ChildDirective)
-   *   },
-   *   template: '<child-directive></child-directive>'
-   * })
-   * class SomeDir {
-   *   contentChildren: QueryList<ChildDirective>,
-   *   viewChildren: QueryList<ChildDirective>
-   *
-   *   ngAfterContentInit() {
-   *     // contentChildren is set
-   *   }
-   *
-   *   ngAfterViewInit() {
-   *     // viewChildren is set
-   *   }
-   * }
-   * ```
    */
   queries?: {[key: string]: any};
 }
@@ -397,12 +328,78 @@ export const Directive: DirectiveDecorator = makeDecorator(
 
 /**
  * Marks a class as a component and provides configuration and constructor metadata.
+ * 
+ * @usageNotes
+ *
+ * ### Setting component inputs
+ *
+ * The following example creates a component with two data-bound properties,
+ * specified by the `inputs` value.
+ *
+ * ```typescript
+ * @Component({
+ *   selector: 'bank-account',
+ *   inputs: ['bankName', 'id: account-id'],
+ *   template: `
+ *     Bank Name: {{bankName}}
+ *     Account Id: {{id}}
+ *   `
+ * })
+ * class BankAccount {
+ *   bankName: string;
+ *   id: string;
+ *
+ *   // this property is not bound, and won't be automatically updated by Angular
+ *   normalizedBankName: string;
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: `
+ *     <bank-account bankName="RBC" account-id="4747"></bank-account>
+ *   `
+ * })
+ * class App {}
+ * ```
+ See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
+ *
+ * ### Setting component outputs
+ * 
+ * The following example 
+ *
+ * ```typescript
+ * @Directive({
+ *   selector: 'interval-dir',
+ *   outputs: ['everySecond', 'five5Secs: everyFiveSeconds']
+ * })
+ * class IntervalDir {
+ *   everySecond = new EventEmitter();
+ *   five5Secs = new EventEmitter();
+ *
+ *   constructor() {
+ *     setInterval(() => this.everySecond.emit("event"), 1000);
+ *     setInterval(() => this.five5Secs.emit("event"), 5000);
+ *   }
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: `
+ *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
+ *     </interval-dir>
+ *   `
+ * })
+ * class App {
+ *   everySecond() { console.log('second'); }
+ *   everyFiveSeconds() { console.log('five seconds'); }
+ * }
+ * ```
+ * See [live demo](http://plnkr.co/edit/d5CNq7?p=preview)
  *
  *
  */
 export interface ComponentDecorator {
   /**
-   * @description
    * Marks a class as an Angular component and collects component configuration
    * metadata that determines how the component should be processed,
    * instantiated, and used at runtime.
@@ -422,32 +419,6 @@ export interface ComponentDecorator {
    * life-cycle hooks. For more information, see the 
    * [Livecycle Hooks](guide/lifecycle-hooks) guide.
    *
-   * **Metadata Properties:**
-   *
-   * * **animations** : One or more [animation triggers](trigger), containing 
-   * 'state' and `transition` entries.
-   * * **changeDetection** : The change detection strategy used by this component.
-   * * **encapsulation** : The style encapsulation strategy used by this component.
-   * * **entryComponents** : The set of components that are dynamically inserted into
-   * the view of this component.
-   * * **exportAs** : The name under which the component instance is exported in a template.
-   * * **host** : A map of class property to host element bindings for events, properties, and
-   * attributes
-   * * **inputs** : The set of class property names to data-bind as component inputs.
-   * * **interpolation** : A set of custom interpolation markers used in this component's template.
-   * * **moduleId** :  The ES/CommonJS module ID of the file in which this component is defined.
-   * * **outputs** : The list of class property names that expose output events to which others
-   * can subscribe.
-   * * **providers** : The set of providers available to this component and its children.
-   * * **queries** : Configuration for queries that can be injected into the component.
-   * * **selector** : The CSS selector that identifies this component in a template.
-   * * **styleUrls** : A set of stylesheet URLs to be applied to this component's view.
-   * * **styles** : A set of CSS style define inline, to be applied to this component's view.
-   * * **template** : A template for the view, defined inline.
-   * * **templateUrl** : The URL to an external file containing a template for the view.
-   * * **viewProviders** : A set of view providers available to this component
-   * and its view children.
-   *
    * @usageNotes
    *
    * {@example core/ts/metadata/metadata.ts region='component'}
@@ -463,7 +434,44 @@ export interface ComponentDecorator {
 }
 
 /**
- * Type of the Component metadata.
+ * Supplies configuration metadata for an Angular component.
+ *
+ * @usageNotes
+ *
+ * ### Injecting a class with a view provider
+ *
+ * The following simple example injects a class into a component
+ * using the view provider specified in component metadata:
+ *
+ * ```
+ * class Greeter {
+ *    greet(name:string) {
+ *      return 'Hello ' + name + '!';
+ *    }
+ * }
+ *
+ * @Directive({
+ *   selector: 'needs-greeter'
+ * })
+ * class NeedsGreeter {
+ *   greeter:Greeter;
+ *
+ *   constructor(greeter:Greeter) {
+ *     this.greeter = greeter;
+ *   }
+ * }
+ *
+ * @Component({
+ *   selector: 'greet',
+ *   viewProviders: [
+ *     Greeter
+ *   ],
+ *   template: `<needs-greeter></needs-greeter>`
+ * })
+ * class HelloWorld {
+ * }
+ *
+ * ``` 
  *
  *
  */
@@ -482,50 +490,16 @@ export interface Component extends Directive {
   /**
    * Defines the set of injectable objects that are visible to its view DOM children.
    *
-   * ## Simple Example
-   *
-   * Here is an example of a class that can be injected:
-   *
-   * ```
-   * class Greeter {
-   *    greet(name:string) {
-   *      return 'Hello ' + name + '!';
-   *    }
-   * }
-   *
-   * @Directive({
-   *   selector: 'needs-greeter'
-   * })
-   * class NeedsGreeter {
-   *   greeter:Greeter;
-   *
-   *   constructor(greeter:Greeter) {
-   *     this.greeter = greeter;
-   *   }
-   * }
-   *
-   * @Component({
-   *   selector: 'greet',
-   *   viewProviders: [
-   *     Greeter
-   *   ],
-   *   template: `<needs-greeter></needs-greeter>`
-   * })
-   * class HelloWorld {
-   * }
-   *
-   * ```
    */
   viewProviders?: Provider[];
 
   /**
-   * The module id of the module that contains the component.
-   * Needed to be able to resolve relative urls for templates and styles.
-   * In CommonJS, this can always be set to `module.id`, similarly SystemJS exposes `__moduleName`
-   * variable within each module.
+   * The module ID of the module that contains the component.
+   * The component must be able to resolve relative URLs for templates and styles.
+   * In CommonJS, this can  be set to `module.id`. Similarly, SystemJS exposes the
+   * `__moduleName` variable within each module.
    *
-   *
-   * ## Simple Example
+   * For example:
    *
    * ```
    * @Directive({
@@ -534,164 +508,99 @@ export interface Component extends Directive {
    * })
    * class SomeDir {
    * }
-   *
    * ```
    */
   moduleId?: string;
 
   /**
-   * Specifies a template URL for an Angular component.
+   * The URL of a template file for an Angular component. If provided, 
+   * do not supply an inline template using `template`.
    *
-   *Only one of `templateUrl` or `template` can be defined per View.
    */
   templateUrl?: string;
 
   /**
-   * Specifies an inline template for an Angular component.
+   * An inline template for an Angular component. If provided, 
+   * do not supply a template file using `templateUrl`.
    *
-   * Only one of `templateUrl` or `template` can be defined per Component.
    */
   template?: string;
 
   /**
-   * Specifies stylesheet URLs for an Angular component.
+   * One or more URLs for files containing CSS stylesheets to use
+   * in this component.
    */
   styleUrls?: string[];
 
   /**
-   * Specifies inline stylesheets for an Angular component.
+   * One or more inline CSS stylesheets to use
+   * in this component.
    */
   styles?: string[];
 
   /**
-   * Animations are defined on components via an animation-like DSL. This DSL approach to describing
-   * animations allows for a flexibility that both benefits developers and the framework.
+   * One or more [animation triggers](trigger), containing 
+   * [state](state) and [transition](transition) entries. 
+   * See the [Animations guide](guide/animations) and [API documentation](animations).
    *
-   * Animations work by listening on state changes that occur on an element within
-   * the template. When a state change occurs, Angular can then take advantage and animate the
-   * arc in between. This works similar to how CSS transitions work, however, by having a
-   * programmatic DSL, animations are not limited to environments that are DOM-specific.
-   * (Angular can also perform optimizations behind the scenes to make animations more performant.)
-   *
-   * For animations to be available for use, animation state changes are placed within
-   * {@link trigger animation triggers} which are housed inside of the `animations` annotation
-   * metadata. Within a trigger both {@link state state} and {@link transition transition} entries
-   * can be placed.
-   *
-   * ```typescript
-   * @Component({
-   *   selector: 'animation-cmp',
-   *   templateUrl: 'animation-cmp.html',
-   *   animations: [
-   *     // this here is our animation trigger that
-   *     // will contain our state change animations.
-   *     trigger('myTriggerName', [
-   *       // the styles defined for the `on` and `off`
-   *       // states declared below are persisted on the
-   *       // element once the animation completes.
-   *       state('on', style({ opacity: 1 }),
-   *       state('off', style({ opacity: 0 }),
-   *
-   *       // this here is our animation that kicks off when
-   *       // this state change jump is true
-   *       transition('on => off', [
-   *         animate("1s")
-   *       ])
-   *     ])
-   *   ]
-   * })
-   * ```
-   *
-   * As depicted in the code above, a group of related animation states are all contained within
-   * an animation `trigger` (the code example above called the trigger `myTriggerName`).
-   * When a trigger is created then it can be bound onto an element within the component's
-   * template via a property prefixed by an `@` symbol followed by trigger name and an expression
-   * that
-   * is used to determine the state value for that trigger.
-   *
-   * ```html
-   * <!-- animation-cmp.html -->
-   * <div @myTriggerName="expression">...</div>
-   * ```
-   *
-   * For state changes to be executed, the `expression` value must change value from its existing
-   * value
-   * to something that we have set an animation to animate on (in the example above we are listening
-   * to a change of state between `on` and `off`). The `expression` value attached to the trigger
-   * must be something that can be evaluated with the template/component context.
-   *
-   * ### DSL Animation Functions
-   *
-   * Please visit each of the animation DSL functions listed below to gain a better understanding
-   * of how and why they are used for crafting animations in Angular:
-   *
-   * - {@link trigger trigger()}
-   * - {@link state state()}
-   * - {@link transition transition()}
-   * - {@link group group()}
-   * - {@link sequence sequence()}
-   * - {@link style style()}
-   * - {@link animate animate()}
-   * - {@link keyframes keyframes()}
    */
   animations?: any[];
 
   /**
-   * Specifies how the template and the styles should be encapsulated:
-   * - {@link ViewEncapsulation#Native `ViewEncapsulation.Native`} to use shadow roots - only works
-   *   if natively available on the platform,
-   * - {@link ViewEncapsulation#Emulated `ViewEncapsulation.Emulated`} to use shimmed CSS that
-   *   emulates the native behavior,
-   * - {@link ViewEncapsulation#None `ViewEncapsulation.None`} to use global CSS without any
+   * An encapsulation policy for the template and CSS styles. One of:
+   * - [ViewEncapsulation#Native](`ViewEncapsulation.Native`): Use shadow roots. This works
+   *   only if natively available on the platform.
+   * - [ViewEncapsulation#Emulated](`ViewEncapsulation.Emulated`): Use shimmed CSS that
+   *   emulates the native behavior.
+   * - [ViewEncapsulation#None](`ViewEncapsulation.None`): Use global CSS without any
    *   encapsulation.
    *
-   * When no `encapsulation` is defined for the component, the default value from the
-   * {@link CompilerOptions} is used. The default is `ViewEncapsulation.Emulated`}. Provide a new
-   * `CompilerOptions` to override this value.
+   * If not supplied, the value is taken from `CompilerOptions`. The default compiler option is
+   * `ViewEncapsulation.Emulated`.
    *
-   * If the encapsulation is set to `ViewEncapsulation.Emulated` and the component has no `styles`
-   * nor `styleUrls` the encapsulation will automatically be switched to `ViewEncapsulation.None`.
+   * If the policy is set to `ViewEncapsulation.Emulated` and the component has no `styles`
+   * or `styleUrls` specified, the policy is automatically switched to `ViewEncapsulation.None`.
    */
   encapsulation?: ViewEncapsulation;
 
   /**
-   * Overrides the default encapsulation start and end delimiters (respectively `{{` and `}}`)
+   * Overrides the default encapsulation start and end delimiters (`{{` and `}}`)
    */
   interpolation?: [string, string];
 
   /**
-   * Defines the components that should be compiled as well when
-   * this component is defined. For each components listed here,
-   * Angular will create a {@link ComponentFactory} and store it in the
+   * A set of components that should be compiled along with
+   * this component. For each component listed here,
+   * Angular creates a {@link ComponentFactory} and stores it in the
    * {@link ComponentFactoryResolver}.
    */
   entryComponents?: Array<Type<any>|any[]>;
 
   /**
-   * If {@link Component#preserveWhitespaces Component.preserveWhitespaces} is set to `false`
-   * potentially superfluous whitespace characters (ones matching the `\s` character class in
-   * JavaScript regular expressions) will be removed from a compiled template. This can greatly
-   * reduce AOT-generated code size as well as speed up view creation.
+   * True to preserve or false to remove potentially superfluous whitespace characters
+   * from the compiled template. Whitespace characters are those matching the `\s`
+   * character class in JavaScript regular expressions. 
+   * 
+   * Removing whitespace can greatly reduce AOT-generated code size, and speed up view creation.
    *
-   * Current implementation works according to the following rules:
-   * - all whitespaces at the beginning and the end of a template are removed (trimmed);
-   * - text nodes consisting of whitespaces only are removed (ex.:
-   *   `<button>Action 1</button>  <button>Action 2</button>` will be converted to
-   *   `<button>Action 1</button><button>Action 2</button>` (no whitespaces between buttons);
-   * - series of whitespaces in text nodes are replaced with one space (ex.:
-   *   `<span>\n some text\n</span>` will be converted to `<span> some text </span>`);
-   * - text nodes are left as-is inside HTML tags where whitespaces are significant (ex. `<pre>`,
-   *   `<textarea>`).
+   * Current implementation removes whitespace characters as follows:
+   * - Trims all whitespaces at the beginning and the end of a template.
+   * - Removes whitespace-only text nodes. For example, 
+   * `<button>Action 1</button>  <button>Action 2</button>` becomes
+   * `<button>Action 1</button><button>Action 2</button>`.
+   * - Replaces a series of whitespace characters in text nodes with a single space.
+   * For example, `<span>\n some text\n</span>` becomes `<span> some text </span>`.
+   * - Does NOT alter text nodes inside HTML tags such as `<pre>` or `<textarea>`,
+   * where whitespace characters are significant.
    *
-   * Described transformations may (potentially) influence DOM nodes layout. However, the impact
-   * should so be minimal. That's why starting from Angular 6, the
-   * `preserveWhitespaces` option is `false` by default (whitespace removal).
-   * If you want to change the default setting for all components in your application you can use
+   * Note that these transformations can influence DOM nodes layout, although impact
+   * should be minimal. As of Angular 6, default is false (whitespace is removed).
+   * To change the default setting for all components in your application, set
    * the `preserveWhitespaces` option of the AOT compiler.
    *
-   * Even with the default behavior of whitespace removal, there are ways of preserving whitespaces
-   * in certain fragments of a template. You can either exclude entire DOM sub-tree by using the
-   * `ngPreserveWhitespaces` attribute, ex.:
+   * You can override the default behavior to preserve whitespace characters
+   * in certain fragments of a template. For example, you can exclude an entire
+   * DOM sub-tree by using the`ngPreserveWhitespaces` attribute:
    *
    * ```html
    * <div ngPreserveWhitespaces>
@@ -700,44 +609,63 @@ export interface Component extends Directive {
    * </div>
    * ```
    *
-   * Alternatively you can force a space to be preserved in a text node by using the `&ngsp;`
-   * pseudo-entity. `&ngsp;` will be replaced with a space character by Angular's template
-   * compiler, ex.:
+   * You can force a single space to be preserved in a text node by using `&ngsp;`,
+   * which is replaced with a space character by Angular's template
+   * compiler:
    *
    * ```html
    * <a>Spaces</a>&ngsp;<a>between</a>&ngsp;<a>links.</a>
+   * <!-->compiled to be equivalent to:</>
+   *  <a>Spaces</a> <a>between</a> <a>links.</a> 
    * ```
    *
-   * will be compiled to the equivalent of:
-   *
-   * ```html
-   * <a>Spaces</a> <a>between</a> <a>links.</a>
-   * ```
-   *
-   * Please note that sequences of `&ngsp;` are still collapsed to just one space character when
-   * the `preserveWhitespaces` option is set to `false`. Ex.:
+   * Note that sequences of `&ngsp;` are still collapsed to just one space character when
+   * the `preserveWhitespaces` option is set to `false`.
    *
    * ```html
    * <a>before</a>&ngsp;&ngsp;&ngsp;<a>after</a>
+   * <!-->compiled to be equivalent to:</>
+   *  <a>Spaces</a> <a>between</a> <a>links.</a> 
    * ```
    *
-   * would be equivalent to:
-   *
-   * ```html
-   * <a>before</a> <a>after</a>
-   * ```
-   *
-   * The `&ngsp;` pseudo-entity is useful for forcing presence of
-   * one space (a text node having `&ngsp;` pseudo-entities will never be removed), but it is not
-   * meant to mark sequences of whitespace characters. The previously described
-   * `ngPreserveWhitespaces` attribute is more useful for preserving sequences of whitespace
-   * characters.
+   * To preserve sequences of whitespace characters, use the 
+   * `ngPreserveWhitespaces` attribute.
    */
   preserveWhitespaces?: boolean;
 }
 
 /**
  * Component decorator and metadata.
+ *
+ * @usageNotes
+ *
+ * ### Using animations
+ * 
+ * The following snippet shows a trigger animation in a component's
+ * metadata. The trigger is attached to an element in the component's
+ * template, using "@_trigger_name_", and a state expression that is evaluated
+ * at run time to determine whether the animation should start.
+ * 
+ * ```typescript
+ * @Component({
+ *   selector: 'animation-cmp',
+ *   templateUrl: 'animation-cmp.html',
+ *   animations: [
+ *     trigger('myTriggerName', [
+ *       state('on', style({ opacity: 1 }),
+ *       state('off', style({ opacity: 0 }),
+ *       transition('on => off', [
+ *         animate("1s")
+ *       ])
+ *     ])
+ *   ]
+ * })
+ * ```
+ *
+ * ```html
+ * <!-- animation-cmp.html -->
+ * <div @myTriggerName="expression">...</div>
+ * ```
  *
  *
  * @Annotation
