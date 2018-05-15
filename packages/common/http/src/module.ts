@@ -111,7 +111,7 @@ export class HttpClientXsrfModule {
 
   /**
    * Configure XSRF protection.
-   * @param options An object that can specify either or both 
+   * @param options An object that can specify either or both
    * cookie name or header name.
    * - Cookie name default is `XSRF-TOKEN`.
    * - Header name default is `X-XSRF-TOKEN`.

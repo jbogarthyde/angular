@@ -20,8 +20,8 @@ import {ViewEncapsulation} from './view';
  * @usageNotes
  *
  * To define your own directive, import the decorator
- * and use it to annotate your directive class. The 
- * metadata must include a `selector` that you use to 
+ * and use it to annotate your directive class. The
+ * metadata must include a `selector` that you use to
  * reference your directive class from a template.
  *
  * ```
@@ -82,7 +82,7 @@ import {ViewEncapsulation} from './view';
  * ```
  * See [live demo](http://plnkr.co/edit/DlA5KU?p=preview)
  *
- * The following example creates a directive that maps a host class to a DOM 
+ * The following example creates a directive that maps a host class to a DOM
  * element, setting the `valid` and `invalid` properties
  * on the DOM element that has the `ngModel` directive on it.
  *
@@ -156,7 +156,7 @@ import {ViewEncapsulation} from './view';
  *   }
  * }
  * ```
- * 
+ *
  * ### Configuring queries
  *
  * The followoing example (shows what??)
@@ -191,15 +191,15 @@ export interface DirectiveDecorator {
    * instantiated, and used at run time.
    *
    * A directive must belong to an NgModule in order for it to be usable
-	 * by another directive, component, or application.
-	 * To make a directive a member of anNgModule,
-	 * list it in the `declarations` field of the `@NgModule` metadata.
-	 *
-	 * Note that, in addition to the metadata options for configuring a directive,
-	 * you can control a directive's runtime behavior by implementing
-	 * life-cycle hooks. For more information, see the 
-	 * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
-	 *
+         * by another directive, component, or application.
+         * To make a directive a member of anNgModule,
+         * list it in the `declarations` field of the `@NgModule` metadata.
+         *
+         * Note that, in addition to the metadata options for configuring a directive,
+         * you can control a directive's runtime behavior by implementing
+         * life-cycle hooks. For more information, see the
+         * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
+         *
    * @Annotation
    */
   (obj: Directive): TypeDecorator;
@@ -211,7 +211,7 @@ export interface DirectiveDecorator {
 }
 
 /**
- * 
+ *
  */
 export interface Directive {
   /**
@@ -231,7 +231,7 @@ export interface Directive {
    * element boundaries.
    *
    * For the following template HTML, a directive with an `input[type=text]` selector,
-   * would be instantiated only on the `<input type="text">` element. 
+   * would be instantiated only on the `<input type="text">` element.
    *
    * ```html
    * <form>
@@ -271,7 +271,7 @@ export interface Directive {
   /**
    * Maps class properties to host element bindings for properties,
    * attributes, and events, using a set of key-value pairs.
-   * 
+   *
    * Angular automatically checks host property bindings during change detection.
    * If a binding changes, Angular updates the directive's host element.
    *
@@ -285,7 +285,7 @@ export interface Directive {
    * - The key is the DOM event that the directive listens to.
    * To listen to global events, add the target to the event name.
    * The target can be `window`, `document` or `body`.
-   * - The value is the statement to execute when the event occurs. If the 
+   * - The value is the statement to execute when the event occurs. If the
    * statement evalueates to `false`, then `preventDefault`is applied on the DOM
    * event. A handler method can refer to the `$event` local variable.
    *
@@ -328,7 +328,7 @@ export const Directive: DirectiveDecorator = makeDecorator(
 
 /**
  * Marks a class as a component and provides configuration and constructor metadata.
- * 
+ *
  * @usageNotes
  *
  * ### Setting component inputs
@@ -364,8 +364,8 @@ export const Directive: DirectiveDecorator = makeDecorator(
  See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
  *
  * ### Setting component outputs
- * 
- * The following example 
+ *
+ * The following example
  *
  * ```typescript
  * @Directive({
@@ -416,7 +416,7 @@ export interface ComponentDecorator {
    *
    * Note that, in addition to these options for configuring a directive,
    * you can control a directive's runtime behavior by implementing
-   * life-cycle hooks. For more information, see the 
+   * life-cycle hooks. For more information, see the
    * [Livecycle Hooks](guide/lifecycle-hooks) guide.
    *
    * @usageNotes
@@ -471,7 +471,7 @@ export interface ComponentDecorator {
  * class HelloWorld {
  * }
  *
- * ``` 
+ * ```
  *
  *
  */
@@ -513,14 +513,14 @@ export interface Component extends Directive {
   moduleId?: string;
 
   /**
-   * The URL of a template file for an Angular component. If provided, 
+   * The URL of a template file for an Angular component. If provided,
    * do not supply an inline template using `template`.
    *
    */
   templateUrl?: string;
 
   /**
-   * An inline template for an Angular component. If provided, 
+   * An inline template for an Angular component. If provided,
    * do not supply a template file using `templateUrl`.
    *
    */
@@ -539,8 +539,8 @@ export interface Component extends Directive {
   styles?: string[];
 
   /**
-   * One or more [animation triggers](trigger), containing 
-   * [state](state) and [transition](transition) entries. 
+   * One or more [animation triggers](trigger), containing
+   * [state](state) and [transition](transition) entries.
    * See the [Animations guide](guide/animations) and [API documentation](animations).
    *
    */
@@ -591,12 +591,12 @@ export interface Component extends Directive {
  * @usageNotes
  *
  * ### Using animations
- * 
+ *
  * The following snippet shows a trigger animation in a component's
  * metadata. The trigger is attached to an element in the component's
  * template, using "@_trigger_name_", and a state expression that is evaluated
  * at run time to determine whether the animation should start.
- * 
+ *
  * ```typescript
  * @Component({
  *   selector: 'animation-cmp',
@@ -619,7 +619,7 @@ export interface Component extends Directive {
  * ```
  *
  * ### Preserving whitespace
- * 
+ *
  * Removing whitespace can greatly reduce AOT-generated code size, and speed up view creation.
  * As of Angular 6, default for `preserveWhitespaces` is false (whitespace is removed).
  * To change the default setting for all components in your application, set
@@ -627,7 +627,7 @@ export interface Component extends Directive {
  *
  * Current implementation removes whitespace characters as follows:
  * - Trims all whitespaces at the beginning and the end of a template.
- * - Removes whitespace-only text nodes. For example, 
+ * - Removes whitespace-only text nodes. For example,
  * `<button>Action 1</button>  <button>Action 2</button>` becomes
  * `<button>Action 1</button><button>Action 2</button>`.
  * - Replaces a series of whitespace characters in text nodes with a single space.
@@ -656,7 +656,7 @@ export interface Component extends Directive {
  * ```html
  * <a>Spaces</a>&ngsp;<a>between</a>&ngsp;<a>links.</a>
  * <!-->compiled to be equivalent to:</>
- *  <a>Spaces</a> <a>between</a> <a>links.</a> 
+ *  <a>Spaces</a> <a>between</a> <a>links.</a>
  * ```
  *
  * Note that sequences of `&ngsp;` are still collapsed to just one space character when
@@ -665,10 +665,10 @@ export interface Component extends Directive {
  * ```html
  * <a>before</a>&ngsp;&ngsp;&ngsp;<a>after</a>
  * <!-->compiled to be equivalent to:</>
- *  <a>Spaces</a> <a>between</a> <a>links.</a> 
+ *  <a>Spaces</a> <a>between</a> <a>links.</a>
  * ```
  *
- * To preserve sequences of whitespace characters, use the 
+ * To preserve sequences of whitespace characters, use the
  * `ngPreserveWhitespaces` attribute.
  *
  * @Annotation
