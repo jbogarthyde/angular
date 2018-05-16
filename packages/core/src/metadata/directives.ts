@@ -778,7 +778,7 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
  */
 export interface InputDecorator {
   /**
-   * 
+   *
    */
   (bindingPropertyName?: string): any;
   new (bindingPropertyName?: string): any;
