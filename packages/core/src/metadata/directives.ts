@@ -327,12 +327,14 @@ export const Directive: DirectiveDecorator = makeDecorator(
     (type: Type<any>, meta: Directive) => (R3_COMPILE_DIRECTIVE || (() => {}))(type, meta));
 
 /**
- * Marks a class as a component and provides configuration and constructor metadata.
+ * Marks a class as an Angular component and provides configuration
+ * metadata that determines how the component should be processed,
+ * instantiated, and used at runtime.
  *
  */
 export interface ComponentDecorator {
   /**
-   * Marks a class as an Angular component and collects component configuration
+   * Marks a class as an Angular component and provides configuration
    * metadata that determines how the component should be processed,
    * instantiated, and used at runtime.
    *
@@ -342,12 +344,12 @@ export interface ComponentDecorator {
    * Angular components are a subset of directives, always associated with a template.
    * Unlike other directives, only one component can be instantiated per an element in a template.
    *
-   * A component must belong to an NgModule in order for it to be usable
-   * by another component or application. To make it a member of an NgModule,
+   * A component must belong to an NgModule in order for it to be available
+   * to another component or application. To make it a member of an NgModule,
    * list it in the `declarations` field of the `@NgModule` metadata.
    *
    * Note that, in addition to these options for configuring a directive,
-   * you can control a directive's runtime behavior by implementing
+   * you can control a component's runtime behavior by implementing
    * life-cycle hooks. For more information, see the
    * [Livecycle Hooks](guide/lifecycle-hooks) guide.
    *
@@ -695,21 +697,18 @@ export interface PipeDecorator {
  */
 export interface Pipe {
   /**
-   * The pipe name to use in template bindings. For example, a
-   * template binding expression such as `{{ exp | myPipe }}` transforms the
-   * result of the expression using a pipe with the name `myPipe`.
+   * The pipe name to use in template bindings.
    *
    */
   name: string;
 
   /**
-   * When true, the pipe's output depends only on its input.
-   * A pipe is pure by default, meaning that the
-   * `transform()` method is invoked only when its inputs arguments
-   * change.
+   * When true, the pipe is pure, meaning that the
+   * `transform()` method is invoked only when its input arguments
+   * change. Pipes are pure by default.
    *
    * If the pipe has internal state (that is, the result
-   * depends on state other than its arguments), set `pure` to false`.
+   * depends on state other than its arguments), set `pure` to false.
    * In this case, the pipe is invoked on each change-detection cycle,
    * even if the arguments have not changed.
    */
@@ -719,9 +718,17 @@ export interface Pipe {
 /**
  * Marks a class as pipe and supplies configuration metadata.
  *
- * - A pipe class must implement the `PipeTransform` interface.
- * - To use the pipe in a template, you must include a reference
- * to the pipe class in `NgModule#declarations`.
+ * A pipe class must implement the `PipeTransform` interface.
+ * For example, if the name is "myPipe", use a template binding expression
+ * such as the following:
+ * ```
+ * {{ exp | myPipe }}
+ * ```
+ * The result of the expression is passed to the pipe's `transform()' method.
+ *
+ * A pipe must belong to an NgModule in order for it to be available
+ * to a directive, component, or application. To make it a member of an NgModule,
+ * list it in the `declarations` field of the `@NgModule` metadata.
  *
  *
  * @Annotation
@@ -730,50 +737,48 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
 
 
 /**
- * Type of the Input decorator / constructor function.
+ * Declares a data-bound input property, which Angular automatically updates
+ * during change detection.
+ *
+ * @usageNotes
+ *
+ * The following example creates a component with two input properties,
+ * one of which is given a special binding name.
+ *
+ * ```typescript
+ * @Component({
+ *   selector: 'bank-account',
+ *   template: `
+ *     Bank Name: {{bankName}}
+ *     Account Id: {{id}}
+ *   `
+ * })
+ * class BankAccount {
+ *   // This property is bound using its original name.
+ *   @Input() bankName: string;
+ *   // this property value is bound to a different property name
+ *   // when this component is instantiated in a template.
+ *   @Input('account-id') id: string;
+ *
+ *   // this property is not bound, and is not automatically updated by Angular
+ *   normalizedBankName: string;
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: `
+ *     <bank-account bankName="RBC" account-id="4747"></bank-account>
+ *   `
+ * })
+ *
+ * class App {}
+ * ```
  *
  *
  */
 export interface InputDecorator {
   /**
-   * Declares a data-bound input property.
-   *
-   * Angular automatically updates data-bound properties during change detection.
-   *
-   * `Input` takes an optional parameter that specifies the name
-   * used when instantiating a component in the template. When not provided,
-   * the name of the decorated property is used.
-   *
-   * ### Example
-   *
-   * The following example creates a component with two input properties.
-   *
-   * ```typescript
-   * @Component({
-   *   selector: 'bank-account',
-   *   template: `
-   *     Bank Name: {{bankName}}
-   *     Account Id: {{id}}
-   *   `
-   * })
-   * class BankAccount {
-   *   @Input() bankName: string;
-   *   @Input('account-id') id: string;
-   *
-   *   // this property is not bound, and won't be automatically updated by Angular
-   *   normalizedBankName: string;
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `
-   *     <bank-account bankName="RBC" account-id="4747"></bank-account>
-   *   `
-   * })
-   *
-   * class App {}
-   * ```
-   *
+   * 
    */
   (bindingPropertyName?: string): any;
   new (bindingPropertyName?: string): any;
@@ -786,7 +791,9 @@ export interface InputDecorator {
  */
 export interface Input {
   /**
-   * Name used when instantiating a component in the template.
+   * A name to use for the input property when a template instantiates
+   * the component containing the input property.
+   * When not provided, the name of the decorated property is used.
    */
   bindingPropertyName?: string;
 }
