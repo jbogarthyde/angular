@@ -36,7 +36,7 @@ export function defineNgModule<T>(def: {type: T} & Partial<NgModuleDef<T>>): nev
 }
 
 /**
- * A wrapper around a module that associates it with the providers.
+ * A wrapper around an NgModule that associates it with the providers.
  *
  *
  */
@@ -85,7 +85,7 @@ export const NO_ERRORS_SCHEMA: SchemaMetadata = {
  */
 export interface NgModuleDecorator {
   /**
-   * Defines an NgModule.
+   * Marks a class as an NgModule and supplies configuration metadata.
    */
   (obj?: NgModule): TypeDecorator;
   new (obj?: NgModule): NgModule;
@@ -100,6 +100,8 @@ export interface NgModule {
   /**
    * The set of injectable objects that are available in the injector
    * of this module.
+   *
+   * @usageNotes
    *
    * The following example defines a class that is injected in
    * the HelloWorld NgModule:
@@ -130,6 +132,8 @@ export interface NgModule {
   /**
    * The set of directives and pipes that belong to this module.
    *
+   * @usageNotes
+   *
    * The following example allows the CommonModule to use the `NgFor`
    * directive.
    *
@@ -147,6 +151,8 @@ export interface NgModule {
    * The set of NgModules, with or without providers,
    * whose exported directives/pipes
    * are available to templates in this module.
+   *
+   * @usageNotes
    *
    * The following example allows MainModule to use CommonModule:
    *
@@ -166,6 +172,8 @@ export interface NgModule {
    * within the template of any component that is part of an
    * NgModule that imports this NgModule.
    *
+   * @usageNotes
+   *
    * The following example exports the `NgFor` directive from CommonModule.
    *
    * ```javascript
@@ -180,8 +188,8 @@ export interface NgModule {
 
   /**
    * The set of components to compile when this NgModule is defined.
-   * For each component listed here, Angular creates a {@link ComponentFactory}
-   * and stores it in the {@link ComponentFactoryResolver}.
+   * For each component listed here, Angular creates a `ComponentFactory`
+   * and stores it in the `ComponentFactoryResolver`.
    */
   entryComponents?: Array<Type<any>|any[]>;
 
@@ -226,8 +234,8 @@ function preR3NgModuleCompile(moduleType: InjectorType<any>, metadata: NgModule)
 }
 
 /**
- * Identifies the following class as an NgModule, and supplies
- * metadata for it.
+ * Marks the following class as an NgModule, and supplies
+ * configuration metadata for it.
  *
  *
  * @Annotation

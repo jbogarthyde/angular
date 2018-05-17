@@ -82,8 +82,8 @@ export function jsonpCallbackContext(): Object {
  * use directly to configure XSRF protection with the correct
  * cookie and header names.
  *
- * If no names are supplied, the default cookie name is XSRF-TOKEN`
- * and the defaultheader name is `X-XSRF-TOKEN`.
+ * If no names are supplied, the default cookie name is `XSRF-TOKEN`
+ * and the default header name is `X-XSRF-TOKEN`.
  *
  *
  */

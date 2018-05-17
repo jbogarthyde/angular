@@ -351,7 +351,7 @@ export interface ComponentDecorator {
    * Note that, in addition to these options for configuring a directive,
    * you can control a component's runtime behavior by implementing
    * life-cycle hooks. For more information, see the
-   * [Livecycle Hooks](guide/lifecycle-hooks) guide.
+   * [Lifecycle Hooks](guide/lifecycle-hooks) guide.
    *
    * @usageNotes
    *
@@ -471,18 +471,19 @@ export interface ComponentDecorator {
  */
 export interface Component extends Directive {
   /**
-   * Defines the used change detection strategy.
+   * The change-detection strategy to use for this component.
    *
-   * When a component is instantiated, Angular creates a change detector, which is responsible for
-   * propagating the component's bindings.
-   *
-   * The `changeDetection` property defines, whether the change detection will be checked every time
-   * or only when the component tells it to do so.
+   * When a component is instantiated, Angular creates a change detector,
+   * which is responsible for propagating the component's bindings.
+   * The strategy is one of:
+   * - `ChangeDetectionStrategy#OnPush` sets the strategy to `CheckOnce` (on demand).
+   * - `ChangeDetectionStrategy#Default` sets the strategy to `CheckAlways`.
    */
   changeDetection?: ChangeDetectionStrategy;
 
   /**
    * Defines the set of injectable objects that are visible to its view DOM children.
+   * See [example](#injecting-a-class-with-a-view-provider).
    *
    */
   viewProviders?: Provider[];
@@ -490,19 +491,9 @@ export interface Component extends Directive {
   /**
    * The module ID of the module that contains the component.
    * The component must be able to resolve relative URLs for templates and styles.
-   * In CommonJS, this can  be set to `module.id`. Similarly, SystemJS exposes the
-   * `__moduleName` variable within each module.
+   * SystemJS exposes the `__moduleName` variable within each module.
+   * In CommonJS, this can  be set to `module.id`.
    *
-   * For example:
-   *
-   * ```
-   * @Directive({
-   *   selector: 'someDir',
-   *   moduleId: module.id
-   * })
-   * class SomeDir {
-   * }
-   * ```
    */
   moduleId?: string;
 
@@ -737,6 +728,34 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
 
 
 /**
+ * 
+ */
+export interface InputDecorator {
+  /**
+   *
+   */
+  (bindingPropertyName?: string): any;
+  new (bindingPropertyName?: string): any;
+}
+
+/**
+ * Type of the Input metadata.
+ *
+ *
+ */
+export interface Input {
+  /** 
+  * An optional name to use in templates when the 
+   * component is instantiated, that maps to the
+   * name of the bound property. By default, the original
+   * name of the bound property is used for input binding.
+   *
+   */
+  bindingPropertyName?: string;
+}
+
+/**
+ * Marks a class field as an input property and supplies configuration metadata.
  * Declares a data-bound input property, which Angular automatically updates
  * during change detection.
  *
@@ -774,34 +793,6 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
  * class App {}
  * ```
  *
- *
- */
-export interface InputDecorator {
-  /**
-   *
-   */
-  (bindingPropertyName?: string): any;
-  new (bindingPropertyName?: string): any;
-}
-
-/**
- * Type of the Input metadata.
- *
- *
- */
-export interface Input {
-  /**
-   * A name to use for the input property when a template instantiates
-   * the component containing the input property.
-   * When not provided, the name of the decorated property is used.
-   */
-  bindingPropertyName?: string;
-}
-
-/**
- * Input decorator and metadata.
- *
- *
  * @Annotation
  */
 export const Input: InputDecorator =
@@ -814,43 +805,10 @@ export const Input: InputDecorator =
  */
 export interface OutputDecorator {
   /**
-   * Declares an event-bound output property.
-   *
-   * When an output property emits an event, an event handler attached to that event
-   * the template is invoked.
-   *
-   * `Output` takes an optional parameter that specifies the name
-   * used when instantiating a component in the template. When not provided,
-   * the name of the decorated property is used.
-   *
-   * ### Example
-   *
-   * ```typescript
-   * @Directive({
-   *   selector: 'interval-dir',
-   * })
-   * class IntervalDir {
-   *   @Output() everySecond = new EventEmitter();
-   *   @Output('everyFiveSeconds') five5Secs = new EventEmitter();
-   *
-   *   constructor() {
-   *     setInterval(() => this.everySecond.emit("event"), 1000);
-   *     setInterval(() => this.five5Secs.emit("event"), 5000);
-   *   }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `
-   *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
-   *     </interval-dir>
-   *   `
-   * })
-   * class App {
-   *   everySecond() { console.log('second'); }
-   *   everyFiveSeconds() { console.log('five seconds'); }
-   * }
-   * ```
+   * An optional name to use in templates when the 
+   * component is instantiated, that maps to the
+   * name of the bound property. By default, the original
+   * name of the bound property is used for output binding.
    *
    */
   (bindingPropertyName?: string): any;
@@ -865,8 +823,9 @@ export interface OutputDecorator {
 export interface Output { bindingPropertyName?: string; }
 
 /**
- * Output decorator and metadata.
- *
+ * Marks a class field as an output property and supplies configuration metadata.
+ * Declares a data-bound output property, which Angular automatically updates
+ * during change detection.
  *
  * @Annotation
  */
@@ -881,36 +840,8 @@ export const Output: OutputDecorator =
  */
 export interface HostBindingDecorator {
   /**
-   * Declares a host property binding.
-   *
-   * Angular automatically checks host property bindings during change detection.
-   * If a binding changes, it will update the host element of the directive.
-   *
-   * `HostBinding` takes an optional parameter that specifies the property
-   * name of the host element that will be updated. When not provided,
+   * The property name of the host element to updated. When not provided,
    * the class property name is used.
-   *
-   * ### Example
-   *
-   * The following example creates a directive that sets the `valid` and `invalid` classes
-   * on the DOM element that has ngModel directive on it.
-   *
-   * ```typescript
-   * @Directive({selector: '[ngModel]'})
-   * class NgModelStatus {
-   *   constructor(public control:NgModel) {}
-   *   @HostBinding('class.valid') get valid() { return this.control.valid; }
-   *   @HostBinding('class.invalid') get invalid() { return this.control.invalid; }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `<input [(ngModel)]="prop">`,
-   * })
-   * class App {
-   *   prop;
-   * }
-   * ```
    *
    */
   (hostPropertyName?: string): any;
@@ -925,8 +856,31 @@ export interface HostBindingDecorator {
 export interface HostBinding { hostPropertyName?: string; }
 
 /**
- * HostBinding decorator and metadata.
+ * Marks a class field as an host-binding property and supplies configuration metadata.
+ * Angular automatically checks host property bindings during change detection, and
+ * if a binding changes it updates the host element of the directive.
  *
+ * @usageNotes
+ *
+ * The following example creates a directive that sets the `valid` and `invalid` classes
+ * on the DOM element that has an `ngModel` directive on it.
+ *
+ * ```typescript
+ * @Directive({selector: '[ngModel]'})
+ * class NgModelStatus {
+ *   constructor(public control:NgModel) {}
+ *   @HostBinding('class.valid') get valid() { return this.control.valid; }
+ *   @HostBinding('class.invalid') get invalid() { return this.control.invalid; }
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: `<input [(ngModel)]="prop">`,
+ * })
+ * class App {
+ *   prop;
+ * }
+ * ```
  *
  * @Annotation
  */
@@ -940,38 +894,7 @@ export const HostBinding: HostBindingDecorator =
  *
  */
 export interface HostListenerDecorator {
-  /**
-   * Declares a host listener.
-   *
-   * Angular will invoke the decorated method when the host element emits the specified event.
-   *
-   * If the decorated method returns `false`, then `preventDefault` is applied on the DOM event.
-   *
-   * ### Example
-   *
-   * The following example declares a directive that attaches a click listener to the button and
-   * counts clicks.
-   *
-   * ```typescript
-   * @Directive({selector: 'button[counting]'})
-   * class CountClicks {
-   *   numberOfClicks = 0;
-   *
-   *   @HostListener('click', ['$event.target'])
-   *   onClick(btn) {
-   *     console.log('button', btn, 'number of clicks:', this.numberOfClicks++);
-   *   }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: '<button counting>Increment</button>',
-   * })
-   * class App {}
-   * ```
-   *
-   * @Annotation
-   */
+  
   (eventName: string, args?: string[]): any;
   new (eventName: string, args?: string[]): any;
 }
@@ -982,13 +905,43 @@ export interface HostListenerDecorator {
  *
  */
 export interface HostListener {
+  /**
+   * The event to listen for.
+   */
   eventName?: string;
+  /**
+   * A set of arguments to pass to the handler method when the event occurs.
+   */
   args?: string[];
 }
 
 /**
- * HostListener decorator and metadata.
+ * Marks a method as a host listener and supplies configuration metadata.
+ * Angular invokes the decorated method when the host element emits the specified event.
+ * If the decorated method returns `false`, then `preventDefault` is applied on the DOM event.
  *
+ * @usageNotes
+ *
+ * The following example declares a directive that attaches a click listener to a button and
+ * counts clicks.
+ *
+ * ```typescript
+ * @Directive({selector: 'button[counting]'})
+ * class CountClicks {
+ *   numberOfClicks = 0;
+ *
+ *   @HostListener('click', ['$event.target'])
+ *   onClick(btn) {
+ *     console.log('button', btn, 'number of clicks:', this.numberOfClicks++);
+ *   }
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: '<button counting>Increment</button>',
+ * })
+ * class App {}
+ * ```
  *
  * @Annotation
  */
