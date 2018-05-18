@@ -263,7 +263,7 @@ export interface Directive {
    *
    * Each input property maps a `directiveProperty` to a `bindingProperty`:
    * - `directiveProperty` specifies the component property that emits events.
-   * - `bindingProperty` specifies the DOM property the event handler is attached to.
+   * - `bindingProperty` specifies the HTML attribute the event handler is attached to.
    *
    */
   outputs?: string[];
