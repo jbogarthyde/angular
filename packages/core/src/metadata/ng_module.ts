@@ -213,7 +213,7 @@ export interface NgModule {
   schemas?: Array<SchemaMetadata|any[]>;
 
   /**
-   * A name or path that uniquely identifies this NgModule in`getModuleFactory`.
+   * A name or path that uniquely identifies this NgModule in `getModuleFactory`.
    * If left `undefined`, the NgModule is not registered with
    * `getModuleFactory`.
    */

@@ -26,7 +26,7 @@ export interface DirectiveDecorator {
    *
    * A directive must belong to an NgModule in order for it to be usable
    * by another directive, component, or application.
-   * To make a directive a member of anNgModule,
+   * To make a directive a member of an NgModule,
    * list it in the `declarations` field of the `@NgModule` metadata.
    *
    * Note that, in addition to the metadata options for configuring a directive,
@@ -250,7 +250,7 @@ export interface Directive {
    * Each input property maps a `directiveProperty` to a `bindingProperty`:
    *
    * - `directiveProperty` specifies the component property where the value is written.
-   * - `bindingProperty` specifies the DOM property where the value is read from.
+   * - `bindingProperty` specifies the HTML attribute where the value is read from.
    * When not provided, it is assumed to be the same as `directiveProperty`.
    *
    */
@@ -286,7 +286,7 @@ export interface Directive {
    * To listen to global events, add the target to the event name.
    * The target can be `window`, `document` or `body`.
    * - The value is the statement to execute when the event occurs. If the
-   * statement evalueates to `false`, then `preventDefault`is applied on the DOM
+   * statement evalueates to `false`, then `preventDefault` is applied on the DOM
    * event. A handler method can refer to the `$event` local variable.
    *
    */
@@ -401,8 +401,8 @@ export interface ComponentDecorator {
    *   five5Secs = new EventEmitter();
    *
    *   constructor() {
-   *     setInterval(() => this.everySecond.emit("event"), 1000);
-   *     setInterval(() => this.five5Secs.emit("event"), 5000);
+   *     setInterval(() => this.everySecond.emit('event'), 1000);
+   *     setInterval(() => this.five5Secs.emit('event'), 5000);
    *   }
    * }
    *
@@ -625,7 +625,7 @@ export interface Component extends Directive {
  *
  * You can override the default behavior to preserve whitespace characters
  * in certain fragments of a template. For example, you can exclude an entire
- * DOM sub-tree by using the`ngPreserveWhitespaces` attribute:
+ * DOM sub-tree by using the `ngPreserveWhitespaces` attribute:
  *
  * ```html
  * <div ngPreserveWhitespaces>
@@ -715,10 +715,10 @@ export interface Pipe {
  * ```
  * {{ exp | myPipe }}
  * ```
- * The result of the expression is passed to the pipe's `transform()' method.
+ * The result of the expression is passed to the pipe's `transform()` method.
  *
  * A pipe must belong to an NgModule in order for it to be available
- * to a directive, component, or application. To make it a member of an NgModule,
+ * to a template. To make it a member of an NgModule,
  * list it in the `declarations` field of the `@NgModule` metadata.
  *
  *
@@ -728,7 +728,7 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
 
 
 /**
- * 
+ *
  */
 export interface InputDecorator {
   /**
@@ -744,8 +744,8 @@ export interface InputDecorator {
  *
  */
 export interface Input {
-  /** 
-  * An optional name to use in templates when the 
+  /**
+  * An optional name to use in templates when the
    * component is instantiated, that maps to the
    * name of the bound property. By default, the original
    * name of the bound property is used for input binding.
@@ -805,7 +805,7 @@ export const Input: InputDecorator =
  */
 export interface OutputDecorator {
   /**
-   * An optional name to use in templates when the 
+   * An optional name to use in templates when the
    * component is instantiated, that maps to the
    * name of the bound property. By default, the original
    * name of the bound property is used for output binding.
@@ -868,7 +868,7 @@ export interface HostBinding { hostPropertyName?: string; }
  * ```typescript
  * @Directive({selector: '[ngModel]'})
  * class NgModelStatus {
- *   constructor(public control:NgModel) {}
+ *   constructor(public control: NgModel) {}
  *   @HostBinding('class.valid') get valid() { return this.control.valid; }
  *   @HostBinding('class.invalid') get invalid() { return this.control.invalid; }
  * }
@@ -894,7 +894,6 @@ export const HostBinding: HostBindingDecorator =
  *
  */
 export interface HostListenerDecorator {
-  
   (eventName: string, args?: string[]): any;
   new (eventName: string, args?: string[]): any;
 }
