@@ -882,7 +882,6 @@ export interface HostBindingDecorator {
 /**
  * Type of the HostBinding metadata.
  *
- *
  */
 export interface HostBinding { hostPropertyName?: string; }
 
@@ -900,9 +899,7 @@ export const HostBinding: HostBindingDecorator =
  *
  */
 export interface HostListenerDecorator {
-  /**
-   * 
-   */
+
   (eventName: string, args?: string[]): any;
   new (eventName: string, args?: string[]): any;
 }
@@ -914,34 +911,7 @@ export interface HostListenerDecorator {
  */
 export interface HostListener {
   /**
-   * Marks a CSS event as a host listener and supplies configuration metadata.
-   * Angular invokes the supplied handler method when the host element emits the specified event,
-   * and updates the bound element.
-   * If the decorated method returns false, then preventDefault is applied on the DOM event.
-   *
-   * @usageNotes
-   *
-   * The following example declares a directive
-   * that attaches a click listener to a button and counts clicks.
-   *
-   * ```
-   * @Directive({selector: 'button[counting]'})
-   * class CountClicks {
-   *   numberOfClicks = 0;
-   *
-   *   @HostListener('click', ['$event.target'])
-   *   onClick(btn) {
-   *     console.log('button', btn, 'number of clicks:', this.numberOfClicks++);
-   *  }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: '<button counting>Increment</button>',
-   * })
-   * class App {}
-   * ```
-   *
+   * The CSS event to listen for.
    */
   eventName?: string;
   /**
@@ -951,6 +921,34 @@ export interface HostListener {
 }
 
 /**
+ * Binds a CSS event to a host listener and supplies configuration metadata.
+ * Angular invokes the supplied handler method when the host element emits the specified event,
+ * and updates the bound element with the result.
+ * If the handler method returns false, applies `preventDefault` on the bound element.
+ *
+ * @usageNotes
+ *
+ * The following example declares a directive
+ * that attaches a click listener to a button and counts clicks.
+ *
+ * ```
+ * @Directive({selector: 'button[counting]'})
+ * class CountClicks {
+ *   numberOfClicks = 0;
+ *
+ *   @HostListener('click', ['$event.target'])
+ *   onClick(btn) {
+ *     console.log('button', btn, 'number of clicks:', this.numberOfClicks++);
+ *  }
+ * }
+ *
+ * @Component({
+ *   selector: 'app',
+ *   template: '<button counting>Increment</button>',
+ * })
+ * class App {}
+ * ```
+ *
  * @Annotation
  */
 export const HostListener: HostListenerDecorator =
