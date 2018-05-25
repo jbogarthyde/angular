@@ -707,19 +707,6 @@ export interface Pipe {
 }
 
 /**
- * Marks a class as pipe and supplies configuration metadata.
- *
- * A pipe class must implement the `PipeTransform` interface.
- * For example, if the name is "myPipe", use a template binding expression
- * such as the following:
- * ```
- * {{ exp | myPipe }}
- * ```
- * The result of the expression is passed to the pipe's `transform()` method.
- *
- * A pipe must belong to an NgModule in order for it to be available
- * to a template. To make it a member of an NgModule,
- * list it in the `declarations` field of the `@NgModule` metadata.
  *
  *
  * @Annotation
@@ -732,6 +719,21 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
  */
 export interface InputDecorator {
   /**
+   * Marks a class as pipe and supplies configuration metadata.
+   *
+   * A pipe class must implement the `PipeTransform` interface.
+   * For example, if the name is "myPipe", use a template binding expression
+   * such as the following:
+   *
+   * ```
+   * {{ exp | myPipe }}
+   * ```
+   *
+   * The result of the expression is passed to the pipe's `transform()` method.
+   *
+   * A pipe must belong to an NgModule in order for it to be available
+   * to a template. To make it a member of an NgModule,
+   * list it in the `declarations` field of the `@NgModule` metadata.
    *
    */
   (bindingPropertyName?: string): any;
@@ -739,59 +741,60 @@ export interface InputDecorator {
 }
 
 /**
- * Type of the Input metadata.
+ * Type of metadata for an `Input` property.
  *
  *
  */
 export interface Input {
   /**
-  * An optional name to use in templates when the
+   * Marks a class field as an input property and supplies configuration metadata.
+   * Declares a data-bound input property, which Angular automatically updates
+   * during change detection.
+   *
+   * @usageNotes
+   *
+   * You can supply an optional name to use in templates when the
    * component is instantiated, that maps to the
    * name of the bound property. By default, the original
    * name of the bound property is used for input binding.
+   *
+   * The following example creates a component with two input properties,
+   * one of which is given a special binding name.
+   *
+   * ```typescript
+   * @Component({
+   *   selector: 'bank-account',
+   *   template: `
+   *     Bank Name: {{bankName}}
+  *      Account Id: {{id}}
+   *   `
+   * })
+   * class BankAccount {
+   *   // This property is bound using its original name.
+   *   @Input() bankName: string;
+   *   // this property value is bound to a different property name
+   *   // when this component is instantiated in a template.
+   *   @Input('account-id') id: string;
+   *
+   *   // this property is not bound, and is not automatically updated by Angular
+   *   normalizedBankName: string;
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: `
+   *     <bank-account bankName="RBC" account-id="4747"></bank-account>
+   *   `
+   * })
+   *
+   * class App {}
+   * ```
    *
    */
   bindingPropertyName?: string;
 }
 
 /**
- * Marks a class field as an input property and supplies configuration metadata.
- * Declares a data-bound input property, which Angular automatically updates
- * during change detection.
- *
- * @usageNotes
- *
- * The following example creates a component with two input properties,
- * one of which is given a special binding name.
- *
- * ```typescript
- * @Component({
- *   selector: 'bank-account',
- *   template: `
- *     Bank Name: {{bankName}}
- *     Account Id: {{id}}
- *   `
- * })
- * class BankAccount {
- *   // This property is bound using its original name.
- *   @Input() bankName: string;
- *   // this property value is bound to a different property name
- *   // when this component is instantiated in a template.
- *   @Input('account-id') id: string;
- *
- *   // this property is not bound, and is not automatically updated by Angular
- *   normalizedBankName: string;
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: `
- *     <bank-account bankName="RBC" account-id="4747"></bank-account>
- *   `
- * })
- *
- * class App {}
- * ```
  *
  * @Annotation
  */
@@ -804,11 +807,19 @@ export const Input: InputDecorator =
  *
  */
 export interface OutputDecorator {
-  /**
-   * An optional name to use in templates when the
+   /**
+   * Marks a class field as an output property and supplies configuration metadata.
+   * Declares a data-bound output property, which Angular automatically updates
+   * during change detection.
+   *
+   * @usageNotes
+   *
+   * You can supply an optional name to use in templates when the
    * component is instantiated, that maps to the
    * name of the bound property. By default, the original
    * name of the bound property is used for output binding.
+   *
+   * See `@Input` decorator for an example of providing a binding name.
    *
    */
   (bindingPropertyName?: string): any;
@@ -823,9 +834,6 @@ export interface OutputDecorator {
 export interface Output { bindingPropertyName?: string; }
 
 /**
- * Marks a class field as an output property and supplies configuration metadata.
- * Declares a data-bound output property, which Angular automatically updates
- * during change detection.
  *
  * @Annotation
  */
@@ -840,9 +848,32 @@ export const Output: OutputDecorator =
  */
 export interface HostBindingDecorator {
   /**
-   * The property name of the host element to updated. When not provided,
-   * the class property name is used.
+   * Marks a DOM property as a host-binding property and supplies configuration metadata.
+   * Angular automatically checks host property bindings during change detection, and
+   * if a binding changes it updates the host element of the directive.
    *
+   * @usageNotes
+   *
+   * The following example creates a directive that sets the `valid` and `invalid`
+   * properties on the DOM element that has an `ngModel` directive on it.
+   *
+   * ```typescript
+   * @Directive({selector: '[ngModel]'})
+   * class NgModelStatus {
+   *   constructor(public control: NgModel) {}
+   *   @HostBinding('class.valid') get valid() { return this.control.valid; }
+   *   @HostBinding('class.invalid') get invalid() { return this.control.invalid; }
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: `<input [(ngModel)]="prop">`,
+   * })
+   * class App {
+   *   prop;
+   * }
+   * ```
+   * 
    */
   (hostPropertyName?: string): any;
   new (hostPropertyName?: string): any;
@@ -856,31 +887,6 @@ export interface HostBindingDecorator {
 export interface HostBinding { hostPropertyName?: string; }
 
 /**
- * Marks a class field as an host-binding property and supplies configuration metadata.
- * Angular automatically checks host property bindings during change detection, and
- * if a binding changes it updates the host element of the directive.
- *
- * @usageNotes
- *
- * The following example creates a directive that sets the `valid` and `invalid` classes
- * on the DOM element that has an `ngModel` directive on it.
- *
- * ```typescript
- * @Directive({selector: '[ngModel]'})
- * class NgModelStatus {
- *   constructor(public control: NgModel) {}
- *   @HostBinding('class.valid') get valid() { return this.control.valid; }
- *   @HostBinding('class.invalid') get invalid() { return this.control.invalid; }
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: `<input [(ngModel)]="prop">`,
- * })
- * class App {
- *   prop;
- * }
- * ```
  *
  * @Annotation
  */
@@ -894,6 +900,9 @@ export const HostBinding: HostBindingDecorator =
  *
  */
 export interface HostListenerDecorator {
+  /**
+   * 
+   */
   (eventName: string, args?: string[]): any;
   new (eventName: string, args?: string[]): any;
 }
@@ -905,7 +914,34 @@ export interface HostListenerDecorator {
  */
 export interface HostListener {
   /**
-   * The event to listen for.
+   * Marks a CSS event as a host listener and supplies configuration metadata.
+   * Angular invokes the supplied handler method when the host element emits the specified event,
+   * and updates the bound element.
+   * If the decorated method returns false, then preventDefault is applied on the DOM event.
+   *
+   * @usageNotes
+   *
+   * The following example declares a directive
+   * that attaches a click listener to a button and counts clicks.
+   *
+   * ```
+   * @Directive({selector: 'button[counting]'})
+   * class CountClicks {
+   *   numberOfClicks = 0;
+   *
+   *   @HostListener('click', ['$event.target'])
+   *   onClick(btn) {
+   *     console.log('button', btn, 'number of clicks:', this.numberOfClicks++);
+   *  }
+   * }
+   *
+   * @Component({
+   *   selector: 'app',
+   *   template: '<button counting>Increment</button>',
+   * })
+   * class App {}
+   * ```
+   *
    */
   eventName?: string;
   /**
@@ -915,33 +951,6 @@ export interface HostListener {
 }
 
 /**
- * Marks a method as a host listener and supplies configuration metadata.
- * Angular invokes the decorated method when the host element emits the specified event.
- * If the decorated method returns `false`, then `preventDefault` is applied on the DOM event.
- *
- * @usageNotes
- *
- * The following example declares a directive that attaches a click listener to a button and
- * counts clicks.
- *
- * ```typescript
- * @Directive({selector: 'button[counting]'})
- * class CountClicks {
- *   numberOfClicks = 0;
- *
- *   @HostListener('click', ['$event.target'])
- *   onClick(btn) {
- *     console.log('button', btn, 'number of clicks:', this.numberOfClicks++);
- *   }
- * }
- *
- * @Component({
- *   selector: 'app',
- *   template: '<button counting>Increment</button>',
- * })
- * class App {}
- * ```
- *
  * @Annotation
  */
 export const HostListener: HostListenerDecorator =
