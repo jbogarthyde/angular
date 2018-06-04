@@ -317,7 +317,7 @@ export interface Directive {
 }
 
 /**
- * Marks a class as a directive and provides configuration metadata.
+ * Decorator that marks a class as a directive and provides configuration metadata.
  *
  *
  * @Annotation
@@ -327,14 +327,14 @@ export const Directive: DirectiveDecorator = makeDecorator(
     (type: Type<any>, meta: Directive) => (R3_COMPILE_DIRECTIVE || (() => {}))(type, meta));
 
 /**
- * Marks a class as an Angular component and provides configuration
+ * Decorator that marks a class as an Angular component and provides configuration
  * metadata that determines how the component should be processed,
  * instantiated, and used at runtime.
  *
  */
 export interface ComponentDecorator {
   /**
-   * Marks a class as an Angular component and provides configuration
+   * Decorator that marks a class as an Angular component and provides configuration
    * metadata that determines how the component should be processed,
    * instantiated, and used at runtime.
    *
@@ -356,7 +356,7 @@ export interface ComponentDecorator {
    * @usageNotes
    *
    * ### Setting component inputs
-   *
+   * TODO: replace w/code-example tagged reference
    * The following example creates a component with two data-bound properties,
    * specified by the `inputs` value.
    *
@@ -388,7 +388,7 @@ export interface ComponentDecorator {
    See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
    *
    * ### Setting component outputs
-   *
+   * TODO: replace w/code-example tagged reference
    * The following example (shows what, exactly??)
    *
    * ```typescript
@@ -719,7 +719,7 @@ export const Pipe: PipeDecorator = makeDecorator('Pipe', (p: Pipe) => ({pure: tr
  */
 export interface InputDecorator {
   /**
-   * Marks a class as pipe and supplies configuration metadata.
+   * Decorator that marks a class as pipe and supplies configuration metadata.
    *
    * A pipe class must implement the `PipeTransform` interface.
    * For example, if the name is "myPipe", use a template binding expression
@@ -747,7 +747,7 @@ export interface InputDecorator {
  */
 export interface Input {
   /**
-   * Marks a class field as an input property and supplies configuration metadata.
+   * Decorator that marks a class field as an input property and supplies configuration metadata.
    * Declares a data-bound input property, which Angular automatically updates
    * during change detection.
    *
@@ -808,7 +808,7 @@ export const Input: InputDecorator =
  */
 export interface OutputDecorator {
    /**
-   * Marks a class field as an output property and supplies configuration metadata.
+   * Decorator that marks a class field as an output property and supplies configuration metadata.
    * Declares a data-bound output property, which Angular automatically updates
    * during change detection.
    *
@@ -848,7 +848,7 @@ export const Output: OutputDecorator =
  */
 export interface HostBindingDecorator {
   /**
-   * Marks a DOM property as a host-binding property and supplies configuration metadata.
+   * Decorator that marks a DOM property as a host-binding property and supplies configuration metadata.
    * Angular automatically checks host property bindings during change detection, and
    * if a binding changes it updates the host element of the directive.
    *
