@@ -807,21 +807,21 @@ export const Input: InputDecorator =
  *
  */
 export interface OutputDecorator {
-   /**
-   * Decorator that marks a class field as an output property and supplies configuration metadata.
-   * Declares a data-bound output property, which Angular automatically updates
-   * during change detection.
-   *
-   * @usageNotes
-   *
-   * You can supply an optional name to use in templates when the
-   * component is instantiated, that maps to the
-   * name of the bound property. By default, the original
-   * name of the bound property is used for output binding.
-   *
-   * See `@Input` decorator for an example of providing a binding name.
-   *
-   */
+  /**
+  * Decorator that marks a class field as an output property and supplies configuration metadata.
+  * Declares a data-bound output property, which Angular automatically updates
+  * during change detection.
+  *
+  * @usageNotes
+  *
+  * You can supply an optional name to use in templates when the
+  * component is instantiated, that maps to the
+  * name of the bound property. By default, the original
+  * name of the bound property is used for output binding.
+  *
+  * See `@Input` decorator for an example of providing a binding name.
+  *
+  */
   (bindingPropertyName?: string): any;
   new (bindingPropertyName?: string): any;
 }
@@ -848,7 +848,8 @@ export const Output: OutputDecorator =
  */
 export interface HostBindingDecorator {
   /**
-   * Decorator that marks a DOM property as a host-binding property and supplies configuration metadata.
+   * Decorator that marks a DOM property as a host-binding property and supplies configuration
+   * metadata.
    * Angular automatically checks host property bindings during change detection, and
    * if a binding changes it updates the host element of the directive.
    *
@@ -873,7 +874,7 @@ export interface HostBindingDecorator {
    *   prop;
    * }
    * ```
-   * 
+   *
    */
   (hostPropertyName?: string): any;
   new (hostPropertyName?: string): any;
@@ -899,7 +900,6 @@ export const HostBinding: HostBindingDecorator =
  *
  */
 export interface HostListenerDecorator {
-
   (eventName: string, args?: string[]): any;
   new (eventName: string, args?: string[]): any;
 }

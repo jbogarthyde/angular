@@ -234,12 +234,12 @@ function preR3NgModuleCompile(moduleType: InjectorType<any>, metadata: NgModule)
 }
 
 /**
- * Marks the following class as an NgModule, and supplies
- * configuration metadata for it.
- *
- *
  * @Annotation
  */
 export const NgModule: NgModuleDecorator = makeDecorator(
     'NgModule', (ngModule: NgModule) => ngModule, undefined, undefined,
+    /**
+     * Decorator that marks the following class as an NgModule, and supplies
+     * configuration metadata for it.
+     */
     (type: Type<any>, meta: NgModule) => (R3_COMPILE_NGMODULE || preR3NgModuleCompile)(type, meta));
