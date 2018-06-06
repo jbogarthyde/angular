@@ -356,70 +356,18 @@ export interface ComponentDecorator {
    * @usageNotes
    *
    * ### Setting component inputs
-   * TODO: replace w/code-example tagged reference
+   *
    * The following example creates a component with two data-bound properties,
    * specified by the `inputs` value.
    *
-   * ```typescript
-   * @Component({
-   *   selector: 'bank-account',
-   *   inputs: ['bankName', 'id: account-id'],
-   *   template: `
-   *     Bank Name: {{bankName}}
-   *     Account Id: {{id}}
-   *   `
-   * })
-   * class BankAccount {
-   *   bankName: string;
-   *   id: string;
-   *
-   *   // this property is not bound, and won't be automatically updated by Angular
-   *   normalizedBankName: string;
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `
-   *     <bank-account bankName="RBC" account-id="4747"></bank-account>
-   *   `
-   * })
-   * class App {}
-   * ```
-   See [live demo](http://plnkr.co/edit/ivhfXY?p=preview).
+   * {@example core/ts/metadata/directives.ts region='component-input'}
    *
    * ### Setting component outputs
-   * TODO: replace w/code-example tagged reference
-   * The following example (shows what, exactly??)
    *
-   * ```typescript
-   * @Directive({
-   *   selector: 'interval-dir',
-   *   outputs: ['everySecond', 'five5Secs: everyFiveSeconds']
-   * })
-   * class IntervalDir {
-   *   everySecond = new EventEmitter();
-   *   five5Secs = new EventEmitter();
+   * The following example show two event emitters that emit on an interval. One
+   * emits an output every second, while the other emits every five seconds.
    *
-   *   constructor() {
-   *     setInterval(() => this.everySecond.emit('event'), 1000);
-   *     setInterval(() => this.five5Secs.emit('event'), 5000);
-   *   }
-   * }
-   *
-   * @Component({
-   *   selector: 'app',
-   *   template: `
-   *     <interval-dir (everySecond)="everySecond()" (everyFiveSeconds)="everyFiveSeconds()">
-   *     </interval-dir>
-   *   `
-   * })
-   * class App {
-   *   everySecond() { console.log('second'); }
-   *   everyFiveSeconds() { console.log('five seconds'); }
-   * }
-   * ```
-   * See [live demo](http://plnkr.co/edit/d5CNq7?p=preview)
-   *
+   * {@example core/ts/metadata/directives.ts region='component-output-interval'}
    *
    * ### Injecting a class with a view provider
    *
