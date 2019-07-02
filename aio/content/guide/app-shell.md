@@ -3,7 +3,7 @@
 An *app shell* is a way to render a portion of your application via a route at build time.
 It can improve the user experience by quickly launching a static rendered page (a skeleton common to all pages) while the browser downloads the full client version and switches to it automatically after the code loads.
 
-This gives users a meaningful first paint of your application that appears quickly because the browser can simply render the HTML and CSS without the need to initialize any JavaScript.
+This gives users a meaningful first paint of your application that appears quickly because the browser can simply render the HTML and CSS without the need to parse any JavaScript.
 
 * Learn more about app shells in [The App Shell Model](https://developers.google.com/web/fundamentals/architecture/app-shell).
 
@@ -14,19 +14,40 @@ This gives users a meaningful first paint of your application that appears quick
 * Learn more about the Angular [Universal engine for server-side rendering](guide/universal).
 
 
-## Step 1: Prepare the application
+## Step 1: Prepare the application to use routing
 
 You can do this automatically when creating a new application with the following CLI command:
 <code-example format="." language="bash" linenums="false">
 ng new my-app --routing
 </code-example>
 
-For an existing application, you have to manually add the `RouterModule` and define a `<router-outlet>` within your application.
+For an existing application, you can add routes in your `AppModule` and import `RouterModule.forRoot()`.
 
-### Step 1a: Add a router module
+```ts
+import ...
+import ...
+const routes: Routes = [
+  {path: '', pathMatch: 'full', redirectTo: 'xxx'},
+  {path: 'xxx', component: LandingComponent, children: []},
+  ...
+];
 
-### Step 1b: Define a router outlet
+@NgModule({
+  declarations: [
+    AppComponent, NavComponent, LandingComponent, ...
+  ],
+  imports: [
+    BrowserModule, BrowserAnimationsModule, CommonModule, RouterModule.forRoot(routes, {
+      useHash: false,
+      preloadingStrategy: PreloadAllModules,
+      scrollPositionRestoration: 'enabled',
+      anchorScrolling: 'enabled'
+}),
+...
+```
 
+You then need to define a `<router-outlet>` within your application.
+Learn more in [Routing and Navigation](guide/router).
 
 ## Step 2: Create the app shell
 
